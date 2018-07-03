@@ -1,0 +1,90 @@
+{% extends "e_base.html" %}
+{% block title %}
+    发布新通知
+{% endblock %}
+
+{% block head %}
+    {% load static %}
+    <style>
+        .fm-title {
+            float: right;
+            margin: 10px 0;
+            margin-right: 0px;
+
+        }
+
+        label {
+            font-size: 20px;
+        }
+
+        .table-div {
+            min-height: 480px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="fm-title">
+            <a href="{% url 'newNews' %}">
+                <button type="button" class="btn btn-default">新消息 <i class="fa fa-plus-square" aria-hidden="true"></i>
+                </button>
+            </a>
+            <a href="#">
+                <button type="button" class="btn btn-default" id="newMan">消息管理 <i class="fa fa-cog"
+                                                                                  aria-hidden="true"></i></button>
+            </a>
+        </div>
+
+        <div class="table-div">
+            <table class="table table-bordered sort-table">
+                <thead>
+                <tr>
+                    <th style="width: 4%">序号</th>
+                    <th style="width: 20%">标题</th>
+                    <th style="width: 30%">内容</th>
+                    <th style="width: 5%">发布者</th>
+                    <th style="width: 7%">最后修改者</th>
+                    <th style="width: 12%;">发布时间</th>
+                    <th style="width: 8%;"><i class="fa fa-ellipsis-h"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if news_list %}
+
+                    {% for news in news_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ news.title|slice:":20" }}</td>
+                            <td>{{ news.content|striptags|slice:":30" }}...</td>
+                            <td>{{ news.created_by.name }}</td>
+                            {% if news.modify_by %}
+                                <td>{{ news.modify_by }}</td>
+                            {% else %}
+                                <td>{{ news.created_by.name }}</td>
+                            {% endif %}
+                            <td>{{ news.ctime|date:'Y/m/d  H:i:s' }}</td>
+                            <td><i class="fa fa-file-text" title="查看详情"></i>&nbsp;&nbsp;&nbsp;<i
+                                    class="fa fa-pencil-square-o" aria-hidden="true" title="编辑此条通知"></i></td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+
+
+    <script>
+
+        $("#nav2").addClass("active");
+
+
+    </script>
+{% endblock %}

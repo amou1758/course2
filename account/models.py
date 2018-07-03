@@ -1,8 +1,10 @@
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
 # 用户表
+
 
 colleges = [
     (1, '新闻学院'),
@@ -40,27 +42,29 @@ class Grade(models.Model):
         return self.name
 
 
-class User(AbstractBaseUser):
-    userno = models.CharField(max_length=11, db_index=True, unique=True)
-    username = models.CharField(max_length=32, db_index=True)
+class User(AbstractUser):
+    username = models.CharField(max_length=11, db_index=True, unique=True, db_column='user_no')
+    name = models.CharField(max_length=32, db_index=True, null=True)
     is_first_login = models.BooleanField(default=True)
-    gender = models.CharField(choices=[('M', '男'), ('F', '女')], max_length=1)
-    role = models.IntegerField(choices=[(1, '学生'), (2, '教师'), (3, '教务')])
+    gender = models.CharField(choices=[('M', '男'), ('F', '女')], max_length=1, default='M', blank=True)
+    role = models.IntegerField(choices=[(1, '学生'), (2, '教师'), (3, '教务')], null=True, blank=True)
     place = models.IntegerField(
         choices=[(1, '助教'), (2, '讲师'), (3, '高级讲师'), (4, '副教授'), (5, '教授'), (6, '高级教授'), (7, '特聘教授'), (8, '客座教授')],
-        null=True)
-    college = models.IntegerField(choices=colleges, null=True)
-    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
-    card_id = models.CharField(max_length=18)
-    nation = models.IntegerField(choices=nations)
-    province = models.IntegerField(choices=provinces)
+        null=True, blank=True)
+    college = models.IntegerField(choices=colleges, null=True, blank=True)
+    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True, blank=True)
+    card_id = models.CharField(max_length=18, null=True)
+    nation = models.IntegerField(choices=nations, null=1)
+    province = models.IntegerField(choices=provinces, default=1)
     email = models.EmailField()
-    telephone = models.CharField(max_length=11)
+    telephone = models.CharField(max_length=11, null=True)
     avatar = models.ImageField(upload_to='user_avatar', null=True, default=None)
-    birthday = models.DateTimeField()
-    qq = models.CharField(max_length=10)
+    birthday = models.DateField()
+    ctime = models.DateTimeField(auto_now_add=True)
+    qq = models.CharField(max_length=10, null=True)
 
-    USERNAME_FIELD = 'userno'
+    USERNAME_FIELD = 'username'
+
 
     def __str__(self):
-        return self.username
+        return self.name
