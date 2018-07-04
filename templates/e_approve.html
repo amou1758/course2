@@ -1,0 +1,125 @@
+{% extends "e_base.html" %}
+{% block title %}
+    审批课程
+{% endblock %}
+
+{% block head %}
+    <style>
+
+        .content {
+            min-height: 480px;
+            padding-top: 10px;
+        }
+
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="content">
+            <div class="table-div">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>申请教师</th>
+                        <th>上课时间</th>
+                        <th>上课地点</th>
+                        <th>学分</th>
+                        <th>申请时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if app_list %}
+                        {% for a in app_list %}
+                            <tr cno="{{ a.course_no }}"
+                                cname="{{ a.course_name }}"
+                            >
+                                <td>{{ a.course_no }}</td>
+                                <td>{{ a.course_name }}</td>
+                                <td>{{ a.get_course_college_display }}</td>
+                                <td>{{ a.course_teacher }}</td>
+                                <td>{{ a.get_course_week_display }} {{ a.get_course_time_display }}</td>
+                                <td>{{ a.get_course_classroom_display }}</td>
+                                <td>{{ a.course_credit }}</td>
+                                <td>{{ a.course_applied_time }}</td>
+                                <td>
+                                    <button type="button" class="bnt btn-success" onclick="Pass(this)"><i
+                                            class="fa fa-check-square" aria-hidden="true"></i></button>
+                                    <button type="button" class="bnt btn-danger" onclick="noPass(this)"><i
+                                            class="fa fa-times" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9"><h1 style="color: silver;text-align: center">暂没有课程需要你审批哦~</h1></td>
+                        </tr>
+                    {% endif %}
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <script>
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+
+        $("#nav4").addClass("active");
+
+        function Pass(th) {
+            var cno = $(th).parent().parent().attr('cno')
+            var cname = $(th).parent().parent().attr('cname')
+            $.ajax({
+                url: 'pass',
+                data: {"cno": cno, "cname": cname},
+                dataType: "JSON",
+                type: "POST",
+                success: function (arg) {
+                    if (arg.status) {
+                        alert(arg.msg);
+                        $('[cno="' + cno + '"]').remove()
+                    } else {
+                        alert(arg.msg);
+                    }
+                }
+
+            })
+        }
+
+        function noPass(th) {
+            var cno = $(th).parent().parent().attr('cno');
+            var cname = $(th).parent().parent().attr('cname')
+
+            $.ajax({
+                url: 'noPass',
+                data: {"cno": cno, "cname": cname},
+                dataType: "JSON",
+                type: "POST",
+                success: function (arg) {
+                    if (arg.status) {
+                        alert(arg.msg);
+                        $('[cno="' + cno + '"]').remove()
+                    } else {
+                        alert(arg.msg);
+                    }
+                }
+
+            })
+        }
+
+    </script>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.db import models
 from account.models import User
-
+from account.models import colleges
 # Create your models here.
 
 
@@ -87,24 +87,31 @@ class Course(models.Model):
     # 小数，最大为5
     course_credit = models.DecimalField(max_digits=2, decimal_places=1)
     course_ctime = models.DateTimeField(auto_now_add=True)
-    course_desc = models.CharField(max_length=140, default='暂无')
-    # 0=已发布 1=已被申请待审批 2=审批同意 3=审批拒绝
+    course_desc = models.CharField(max_length=140, default='暂无', null=True)
+    course_college = models.IntegerField(choices=colleges, default=1, verbose_name="开课学院")
+    # 0=已发布 1=已被申请待审批 2=审批同意 3=审批拒绝 4=教师上线课程 5=课程下线
     course_status = models.IntegerField(default=0)
     course_online = models.BooleanField(default=False)
-    course_online = models.DateTimeField()
-    course_starter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='pub_courses')
-
+    course_online_time = models.DateTimeField(null=True)
+    course_starter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='pub_courses',
+                                       blank=True)
+    course_approver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='approve_courses',
+                                        blank=True)
     # teacher add
-    course_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='app_courses')
-    course_applied_time = models.DateTimeField()
-    course_week = models.IntegerField(choices=weeks)
-    course_time = models.IntegerField(choices=times)
-    course_classroom = models.IntegerField(choices=classrooms)
+    course_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='apply_courses', null=True,
+                                       blank=True)
+    course_applied_time = models.DateTimeField(null=True)
+    course_week = models.IntegerField(choices=weeks, default=1)
+    course_time = models.IntegerField(choices=times, default=1)
+    course_classroom = models.IntegerField(choices=classrooms, default=1)
     course_total_people = models.IntegerField()
-    course_type = models.IntegerField(choices=[(1, '专业课'), (2, '公选课')])
+    course_type = models.IntegerField(choices=[(1, '专业课'), (2, '公选课')], default=1)
+    # 课程关闭时间, 默认是审批 上线后 3天后 自动关闭选课并下线
+    course_close_time = models.DateTimeField(null=True, blank=True)
+    course_choosed = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('course_no', 'course_teacher', 'course_week', 'course_time')
+        unique_together = ('course_teacher', 'course_week', 'course_time')
 
 
 # 学生选课表

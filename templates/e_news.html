@@ -56,7 +56,7 @@
                 {% if news_list %}
 
                     {% for news in news_list %}
-                        <tr>
+                        <tr nid="{{ news.id }}">
                             <td>{{ forloop.counter }}</td>
                             <td>{{ news.title|slice:":20" }}</td>
                             <td>{{ news.content|striptags|slice:":30" }}...</td>
@@ -64,11 +64,13 @@
                             {% if news.modify_by %}
                                 <td>{{ news.modify_by }}</td>
                             {% else %}
-                                <td>{{ news.created_by.name }}</td>
+                                <td>#</td>
                             {% endif %}
                             <td>{{ news.ctime|date:'Y/m/d  H:i:s' }}</td>
-                            <td><i class="fa fa-file-text" title="查看详情"></i>&nbsp;&nbsp;&nbsp;<i
-                                    class="fa fa-pencil-square-o" aria-hidden="true" title="编辑此条通知"></i></td>
+                            <td><i class="fa fa-file-text" title="查看详情" onclick="newsDetail(this)"></i>&nbsp;&nbsp;&nbsp;
+                                <a href="{% url 'mod_news' news.id %}"> <i class="fa fa-pencil-square-o"
+                                                                           aria-hidden="true" title="编辑此条通知"></i></a>
+                            </td>
                         </tr>
                     {% endfor %}
                 {% endif %}
@@ -78,13 +80,66 @@
 
     </div>
 
+    <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"></h3>
+                    </div>
+                    <div class="panel-body content">
+                    </div>
+                    <div class="panel-footer">
+                        <small id="created_by"></small>
+                        <small id="ctime"></small>
+                        <small id="modify_by"></small>
+                        <small id="mtime"></small>
+                        <small id="watcher"></small>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
     <script>
-
         $("#nav2").addClass("active");
 
+        function newsDetail(t) {
+            $('#newsDetail').modal('show');
+            var nid = $(t).parent().parent().attr('nid');
+            $.ajax({
+                url: '/m_news_detail',
+                type: 'GET',
+                dataType: 'JSON',
+                data: {"nid": nid},
+                success: function (arg) {
+                    $("#newsDetail h3").html("<b>标题:</b> " + arg[0]);
+                    $("#newsDetail .content").html("<b>正文:</b><hr \>" + arg[1]);
+                    $("#newsDetail #ctime").html("<b>创建时间:</b>" + arg[2] + "<hr >");
+                    $("#newsDetail #created_by").html("<b>创建者:</b>" + arg[3] + "<hr >");
+                    $("#newsDetail #mtime").html("<b>最后修改时间:</b>" + arg[4] + "<hr >");
+                    $("#newsDetail #modify_by").html("<b>最后修改人:</b>" + arg[5] + "<hr >");
+                    if (arg[6] == 3) {
+                        arg[6] = "教师";
+                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
+                    } else if (arg[6] == 2) {
+                        arg[6] = "学生";
+                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
+                    } else {
+                        arg[6] = "所有人";
+                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
 
+                    }
+                }
+
+            })
+        }
     </script>
 {% endblock %}

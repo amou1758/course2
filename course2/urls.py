@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from extra_app.DjangoUeditor import urls as DjangoUeditor_urls
 from course import views
 from course2 import settings
@@ -29,5 +29,17 @@ urlpatterns = [
                   path('e/news.html', views.e_news),
                   path('e/newNews.html', news_views.new_news, name='newNews'),
                   path('m_news_detail', news_views.m_news_detail),
+                  re_path(r'mod_news.html(?P<nid>\d+)', news_views.mod_news, name="mod_news"),
+
+                  path('e/pubCourse.html', views.pub_course),
+                  path('e/approve.html', views.e_aprrove),
+                  path('e/pass', views.pass_, name="pass"),
+                  path('e/noPass', views.no_pass, name="noPass"),
+
+                  path('t/index.html', views.t_index),
+                  path('t/apply.html', views.t_apply),
+                  path('t/applied.html', views.t_applied),
+                  path('t/online', views.t_online),
+                  path('t/extend', views.t_extend),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,7 @@
-{% extends 'e_base.html' %}
+{% extends 't_base.html' %}
+
 {% block title %}
-    教务首页
+    教师首页
 {% endblock %}
 {% block head %}
     <style>
@@ -19,19 +20,15 @@
             <div class="body-c">
                 <div class="panel panel-warning">
                     <div class="panel-heading">
-                        <h2 class="panel-title">待批课程</h2>
+                        <h2 class="panel-title">今日课程</h2>
                     </div>
                     <div class="panel-body">
-                        {% if app_list %}
-                            {% for a in app_list %}
-                                <h3>{{ a.name }} --- {{ a.teacher.name }} --- {{ a.credit }}
-                                    --- {{ a.classroom.name }} </h3>
+                        {% if today_course %}
+                            {% for c in today_course %}
+                                <h4>{{ c }} --- {{ c }} --- {{ c }} </h4>
                             {% endfor %}
-                            <a href="/e/approve.html">
-                                <button class="btn btn-primary">进行审批</button>
-                            </a>
                         {% else %}
-                            <h4>今日没有待批课程~~ Have A Nice Day~</h4>
+                            <h4>今日没有课程~~ Have A Nice Day~</h4>
                         {% endif %}
                     </div>
                 </div>
@@ -69,11 +66,8 @@
                     <div class="panel-body content">
                     </div>
                     <div class="panel-footer">
-                        <small id="created_by"></small>
                         <small id="ctime"></small>
-                        <small id="modify_by"></small>
                         <small id="mtime"></small>
-                        <small id="watcher"></small>
                     </div>
                 </div>
 
@@ -101,20 +95,8 @@
                     $("#newsDetail h3").html("<b>标题:</b> " + arg[0]);
                     $("#newsDetail .content").html("<b>正文:</b><hr \>" + arg[1]);
                     $("#newsDetail #ctime").html("<b>创建时间:</b>" + arg[2] + "<hr >");
-                    $("#newsDetail #created_by").html("<b>创建者:</b>" + arg[3] + "<hr >");
                     $("#newsDetail #mtime").html("<b>最后修改时间:</b>" + arg[4] + "<hr >");
-                    $("#newsDetail #modify_by").html("<b>最后修改人:</b>" + arg[5] + "<hr >");
-                    if (arg[6] == 3) {
-                        arg[6] = "教师";
-                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
-                    } else if (arg[6] == 2) {
-                        arg[6] = "学生";
-                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
-                    } else {
-                        arg[6] = "所有人";
-                        window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[6] + "<hr >");
 
-                    }
                 }
 
             })

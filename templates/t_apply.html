@@ -1,0 +1,202 @@
+{% extends "t_base.html" %}
+{% block title %}
+    申请课程
+{% endblock %}
+
+{% block  head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+
+        #appfm p {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(93, 95, 97);
+        }
+
+        #appfm p small {
+            text-align: center;
+            color: red;
+        }
+
+        #err_msg {
+            color: red;
+            font-size: 20px;
+        }
+
+        .table-div {
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="content">
+
+            <div class="table-div">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>学分</th>
+                        <th>发布日期</th>
+                        <th><i class="fa fa-ellipsis-h"></i></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tb">
+                    {% if courses %}
+
+                        {% for cour in courses %}
+                            <tr cno="{{ cour.course_no }}"
+                                cname="{{ cour.course_name }}"
+                                ccol="{{ cour.get_course_college_display }}"
+                                ccre="{{ cour.course_credit }}"
+                            >
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ cour.course_no }}</td>
+                                <td>{{ cour.course_name }}</td>
+                                <td>{{ cour.get_course_college_display }}</td>
+                                <td>{{ cour.course_credit }}</td>
+                                <td>{{ cour.course_ctime }}</td>
+                                <td style="width: 8%">
+                                    <button type="button" class="btn btn-default" onclick="apply(this)">申请 <i
+                                            class="fa fa-plus-square fa-lg" aria-hidden="true" title="申请该课程"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7"><h1 style="color: silver;text-align: center">目前暂无新课程发布</h1></td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+                {% if obj2.num_pages %}
+                    <ul class="pagination">
+                        <li>
+                            {{ obj2.page_range_str|safe }}
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">申请新课程</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="appfm">
+                        <div class="form-group">
+                            {% csrf_token %}
+
+                            <p>
+                                <span>课程号</span>
+                                <input class="form-control" type="text" disabled name="no">
+                            </p>
+                            <p>
+                            <p>
+                                <span>课程名</span>
+                                <input class="form-control" type="text" disabled name="name">
+                            </p>
+                            <p>
+                            <p>
+                                <span>学分</span>
+                                <input class="form-control" type="text" disabled name="credit">
+                            </p>
+                            <p>
+                            <p>
+                                <span>授课学院</span>
+                                <input class="form-control" type="text" disabled name="college_id">
+                            </p>
+                            <p>
+                                <span>教室</span>
+                                {{ obj.course_classroom }}
+                            </p>
+                            <p>
+                                <span>星期</span>
+                                {{ obj.course_week }}
+                            </p>
+                            <p>
+                                <span>时间</span>
+                                {{ obj.course_time }}</p>
+                            <p>
+                                <span>课程类型</span>
+                                {{ obj.course_type }}</p>
+                            <p>
+                                <span>课程名额</span>
+                                {{ obj.course_total_people }}
+                                <br>
+                                <small><b id="err_msgTotal" style="float: left"></b></small>
+                            </p>
+
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small><b id="err_msg" style="float: left"></b></small>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="appBtn">申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#nav2").addClass("active");
+
+
+        function apply(t) {
+            $("#addModal").modal("show");
+            var no = $(t).parent().parent().attr("cno");
+            var name = $(t).parent().parent().attr("cname");
+            var collegeName = $(t).parent().parent().attr("ccol");
+            var credit = $(t).parent().parent().attr("ccre");
+            $(":text").eq(0).val(no);
+            $(":text").eq(1).val(name);
+            $(":text").eq(2).val(credit);
+            $(":text").eq(3).val(collegeName);
+
+
+            $("#appBtn").click(function () {
+                // 追加参数到serialize
+                var data = $.param({"cno": no}) + "&" + $("#appfm").serialize();
+                console.log(data)
+                $.ajax({
+                    url: "apply.html",
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON",
+                    success: function (arg) {
+                        if (arg.status) {
+                            console.log("okokok")
+                            alert("申请成功~~~");
+                            $("#addModal").modal("hide");
+                            window.location.reload();
+                        } else {
+
+                            $("#err_msgTotal").html(arg.msg.course_total_people);
+                            $("#err_msg").html(arg.msg);
+                        }
+                    }
+                })
+
+            })
+
+        }
+
+    </script>
+{% endblock %}
