@@ -137,7 +137,7 @@
                                 {{ obj.course_type }}</p>
                             <p>
                                 <span>课程名额</span>
-                                {{ obj.course_total_people }}
+                                {{ obj.course_total_people }} 人
                                 <br>
                                 <small><b id="err_msgTotal" style="float: left"></b></small>
                             </p>
@@ -174,7 +174,7 @@
             $("#appBtn").click(function () {
                 // 追加参数到serialize
                 var data = $.param({"cno": no}) + "&" + $("#appfm").serialize();
-                console.log(data)
+                {#console.log(data)#}
                 $.ajax({
                     url: "apply.html",
                     type: "POST",

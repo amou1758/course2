@@ -5,10 +5,12 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from course.form import PubForm, AppForm
+from course.form import PubForm, AppForm, ExtendForm, CourseSearchForm
 from course2.ulities import MyPagination
 from news.models import News
-from .models import Course
+from .models import Course, StudentCourse
+
+
 # Create your views here.
 
 
@@ -61,7 +63,8 @@ def pub_course(request):
 
 def t_index(request):
     today_ = datetime.datetime.now().weekday() + 1
-    today_courses = Course.objects.filter(course_choosed=True, course_teacher=request.user, course_week=today_)
+    today_courses = Course.objects.filter(course_choosed_student__gte=1, course_teacher=request.user,
+                                          course_week=today_)
     news = News.objects.filter(Q(watcher=1) | Q(watcher=2)).order_by("-mtime")
     return render(request, "t_index.html", {"today_course": today_courses, "news": news})
 
@@ -108,7 +111,8 @@ def t_apply(request):
 
 def t_applied(request):
     applied_course_list = Course.objects.filter(course_teacher=request.user).order_by("-course_applied_time")
-    return render(request, "t_applied.html", {"applied_course_list": applied_course_list})
+    extend_obj = ExtendForm()
+    return render(request, "t_applied.html", {"applied_course_list": applied_course_list, "obj": extend_obj})
 
 
 def t_online(request):
@@ -126,14 +130,44 @@ def t_online(request):
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+def t_offline(request):
+    if request.method == "POST":
+        n = datetime.datetime.now()
+        ret = {"status": True}
+        cno = request.POST.get("cno")
+        Course.objects.filter(course_no=cno).update(
+            course_online=False,
+            course_status=5,
+            course_close_time=n.strftime("%Y-%m-%d %H:%M"),
+        )
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
 def t_extend(request):
     if request.method == "POST":
-        cno = request.POST.get("cno")
-        days = request.POST.get("days")
-        ntime = datetime.datetime.now()
-        cour = Course.objects.get(course_no=cno)
-        if ntime < cour.course_close_time:
-            cour.course_close_time += datetime.timedelta(days=days)
+        obj = ExtendForm(request.POST)
+        ret = {"status": True, "msg": None}
+        if obj.is_valid():
+            cno = request.POST.get("cno")
+            people = obj.cleaned_data.get("people")
+            days = obj.cleaned_data.get("days")
+            print(cno, people, days)
+            cour = Course.objects.get(course_no=cno)
+            cour.course_total_people += people
+            cour.course_close_time += datetime.timedelta(days=int(days))
+            cour.save()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+        else:
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            print(obj.errors)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+def t_table(request):
+    courses = Course.objects.filter(course_teacher=request.user, course_choosed_student__gte=1)
+    weeks = [i for i in range(1, 6)]
+    return render(request, "t_table.html", {"courses": courses, "weeks": weeks})
 
 
 def e_aprrove(request):
@@ -164,3 +198,92 @@ def no_pass(request):
         )
         ret["msg"] = "该课程未通过审批"
         return HttpResponse(json.dumps(ret))
+
+
+def s_index(request):
+    today_ = datetime.datetime.now().weekday() + 1
+    today_courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True,
+                                          course_week=today_).order_by("course_time")
+    news = News.objects.filter(Q(watcher=1) | Q(watcher=3)).order_by("-mtime")
+    return render(request, "s_index.html", {"today_course": today_courses, "news": news})
+
+
+def s_course_pool(request):
+    if request.method == "GET":
+        fm = CourseSearchForm()
+        course_pool = Course.objects.filter(Q(course_online=True, course_college=request.user.college, \
+                                              course_type=1) | Q(course_online=True, course_type=2)).exclude(
+            studentcourse__student=request.user) \
+            .order_by('-course_online_time')
+
+        return render(request, "s_select.html", {"fm": fm, "course_pool": course_pool})
+
+    if request.method == "POST":
+        ret = {"status": True}
+        cno = request.POST.get("cno")
+        cour = Course.objects.get(course_no=cno)
+        if cour.course_choosed_student < cour.course_total_people:
+            cour.course_choosed_student += 1
+            cour.save()
+            StudentCourse.objects.create(
+                student=request.user,
+                course=cour
+            )
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        else:
+            ret = {"status": False}
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+def s_search_course(request):
+    if request.method == "POST":
+        fm = CourseSearchForm(request.POST)
+        if fm.is_valid():
+            content = fm.cleaned_data.get("content")
+            if content.isdigit():
+                course_ = Course.objects.filter(Q(course_online=True, course_college=request.user.college, \
+                                                  course_type=1, course_no__contains=content) | Q(course_online=True,
+                                                                                                  course_type=2,
+                                                                                                  course_no__contains=content)).exclude(
+                    studentcourse__student=request.user) \
+                    .order_by('-course_online_time')
+            else:
+                course_ = Course.objects.filter(Q(course_online=True, course_college=request.user.college, \
+                                                  course_type=1, course_name__contains=content) | Q(course_online=True,
+                                                                                                    course_type=2,
+                                                                                                    course_name__contains=content)).exclude(
+                    studentcourse__student=request.user) \
+                    .order_by('-course_online_time')
+
+            obj = MyPagination(course_.count(), request.GET.get("p"), 10, url='s_select.html')
+            course_pool = course_[obj.start():obj.end()]
+            return render(request, 's_select.html', {"obj": obj, "fm": fm, "course_pool": course_pool})
+        else:
+            return HttpResponse("输入不符合要求，请重新输入")
+
+
+def s_selected(request):
+    selected_courses = Course.objects.filter(studentcourse__student=request.user,
+                                             studentcourse__is_choosed=True
+                                             )
+
+    obj = MyPagination(selected_courses.count(), request.GET.get("p"), 10, url='s_select.html')
+    selected_courses = selected_courses[obj.start():obj.end()]
+    return render(request, "s_selected.html", {"obj": obj, "selected_courses": selected_courses})
+
+
+def s_quit(request):
+    if request.method == "POST":
+        ret = {"status": True}
+        cno = request.POST.get("cno")
+        cour = Course.objects.get(course_no=cno)
+        cour.course_choosed_student -= 1
+        StudentCourse.objects.filter(course__course_no=cno).delete()
+        cour.save()
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+def s_table(request):
+    courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True)
+    weeks = [i for i in range(1, 6)]
+    return render(request, "s_table.html", {"courses": courses, "weeks": weeks})

@@ -89,7 +89,7 @@ class Course(models.Model):
     course_ctime = models.DateTimeField(auto_now_add=True)
     course_desc = models.CharField(max_length=140, default='暂无', null=True)
     course_college = models.IntegerField(choices=colleges, default=1, verbose_name="开课学院")
-    # 0=已发布 1=已被申请待审批 2=审批同意 3=审批拒绝 4=教师上线课程 5=课程下线
+    # 0=已发布 1=已被申请待审批 2=审批同意 3=审批拒绝 4=教师上线课程 5=课程关闭
     course_status = models.IntegerField(default=0)
     course_online = models.BooleanField(default=False)
     course_online_time = models.DateTimeField(null=True)
@@ -104,11 +104,11 @@ class Course(models.Model):
     course_week = models.IntegerField(choices=weeks, default=1)
     course_time = models.IntegerField(choices=times, default=1)
     course_classroom = models.IntegerField(choices=classrooms, default=1)
-    course_total_people = models.IntegerField()
+    course_total_people = models.IntegerField(null=True)
     course_type = models.IntegerField(choices=[(1, '专业课'), (2, '公选课')], default=1)
     # 课程关闭时间, 默认是审批 上线后 3天后 自动关闭选课并下线
     course_close_time = models.DateTimeField(null=True, blank=True)
-    course_choosed = models.BooleanField(default=False)
+    course_choosed_student = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ('course_teacher', 'course_week', 'course_time')
@@ -118,4 +118,9 @@ class Course(models.Model):
 class StudentCourse(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.IntegerField(null=True)
+    ctime = models.DateField(auto_now_add=True)
+    is_choosed = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('student', 'course')

@@ -40,6 +40,16 @@ urlpatterns = [
                   path('t/apply.html', views.t_apply),
                   path('t/applied.html', views.t_applied),
                   path('t/online', views.t_online),
+                  path('t/offline', views.t_offline),
                   path('t/extend', views.t_extend),
+                  path('t/table.html', views.t_table),
+
+                  path('s/index.html', views.s_index),
+                  path('s/select.html', views.s_course_pool),
+                  path('s/selected.html', views.s_selected),
+                  path('s/search', views.s_search_course),
+                  path('s/quit', views.s_quit),
+                  path('s/table.html', views.s_table),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

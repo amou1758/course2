@@ -25,19 +25,31 @@
         }
 
         .pass {
-            background-color: lightgreen;
+            background-color: darkseagreen;
         }
 
         .nopass {
             background-color: red;
         }
 
+        .online {
+            background-color: lawngreen;
+        }
+
+        .offline {
+            background-color: lightgray;
+        }
         table thead {
             font-size: 15px;
         }
 
         table tbody {
             font-size: 10px;
+        }
+
+        td a {
+            text-decoration-line: none;
+            color: black;
         }
     </style>
 {% endblock %}
@@ -89,11 +101,9 @@
                                 {% else %}
                                     <td> ——</td>
                                 {% endif %}
-                                {% if c.course_online %}
-                                    <td>0/{{ c.course_total_people }}</td>
-                                {% else %}
-                                    <td> ——</td>
-                                {% endif %}
+
+                                <td>{{ c.course_choosed_student }} / {{ c.course_total_people }}</td>
+
                                 {% if c.course_status == 1 %}
                                     <td>待审批</td>
                                     <td> ——</td>
@@ -101,16 +111,30 @@
                                     <td>审批通过</td>
 
 
-                                    <td>&nbsp;<i class="fa fa-arrow-circle-up" aria-hidden="true" title="上线课程"
-                                                 onclick="online(this)"></i></td>
+                                    <td>&nbsp;<a href=""> <i class="fa fa-arrow-circle-up fa-2x" aria-hidden="true"
+                                                             title="上线课程"
+                                                             onclick="online(this)"></i></a></td>
 
                                 {% elif c.course_status == 3 %}
                                     <td>审批未通过</td>
                                     <td> ——</td>
                                 {% elif c.course_status == 4 %}
                                     <td>审批通过已上线</td>
-                                    <td>&nbsp;<i class="fa fa-plus-square" aria-hidden="true" title="课程扩容"
-                                                 onclick="extend(this)"></i></td>
+                                    <td style="width: 8%;">&nbsp;<a href=""> <i class="fa fa-plus-square fa-2x"
+                                                                                aria-hidden="true" title="课程扩容"
+                                                                                onclick="extend(this)"></i></a>
+                                        &nbsp;&nbsp;
+                                        <a href=""><i class="fa fa-arrow-circle-down fa-2x" aria-hidden="true"
+                                                      title="下线该课程" onclick="offline(this)"></i></a>
+                                    </td>
+                                {% elif c.course_status == 5 %}
+                                    <td>课程已下线</td>
+                                    <td>
+                                        <a href=""> <i class="fa fa-arrow-circle-up fa-2x" aria-hidden="true"
+                                                       title="上线课程"
+                                                       onclick="online(this)"></i></a>
+                                    </td>
+
 
                                 {% endif %}
                             </tr>
@@ -125,9 +149,41 @@
             </div>
         </div>
     </div>
-
-
     </div>
+
+    <div class="modal fade" id="extendForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">课程扩容设置</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="extendfm" novalidate>
+                        <div class="form-group">
+                            <p>
+                                <span>增加课程名额</span>
+                                {{ obj.people }}&nbsp;人
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <span>延长课程关闭时间</span>
+                                {{ obj.days }}&nbsp;天
+                            </p>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small><b id="error_people" style="float: left;color: red"></b></small>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="extBtn">申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
 
         $.ajaxSetup({
@@ -143,16 +199,23 @@
             var list = $(".trid")
 
             for (var i = 0; i < list.length; i++) {
-                if (list.eq(i).attr("cstatus") == 2 || list.eq(i).attr("cstatus") == 4) {
+                if (list.eq(i).attr("cstatus") == 2) {
                     $(".trid").eq(i).addClass("pass");
                 } else if (list.eq(i).attr("cstatus") == 3) {
                     $(".trid").eq(i).addClass("nopass");
                 }
+                else if (list.eq(i).attr("cstatus") == 4) {
+                    $(".trid").eq(i).addClass("online");
+                }
+                else if (list.eq(i).attr("cstatus") == 5) {
+                    $(".trid").eq(i).addClass("offline");
+                }
             }
+
         }
 
         function online(t) {
-            var cno = $(t).parent().parent().attr("cno");
+            var cno = $(t).parent().parent().parent().attr("cno");
             $.ajax({
                 url: 'online',
                 type: 'POST',
@@ -166,10 +229,10 @@
             })
         }
 
-        function extend() {
-            var cno = $(t).parent().parent().attr("cno");
+        function offline(t) {
+            var cno = $(t).parent().parent().parent().attr("cno");
             $.ajax({
-                url: 'extend',
+                url: 'offline',
                 type: 'POST',
                 dataType: 'JSON',
                 data: {"cno": cno},
@@ -177,8 +240,39 @@
                     if (arg.status) {
                         window.location.reload()
                     }
+
                 }
+
             })
+
         }
+
+        function extend(t) {
+
+            $('#extendForm').modal('show');
+            var cno = $(t).parent().parent().parent().attr("cno")
+            $("#extBtn").click(function () {
+                var data = $.param({'csrfmiddlewaretoken': '{{ csrf_token }}'}) + "&" + $.param({"cno": cno}) + "&" + $("#extendfm").serialize();
+                console.log(data);
+                $.ajax({
+                    url: 'extend',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: data,
+                    success: function (arg) {
+                        if (arg.status) {
+                            window.location.reload()
+                        }
+                        else {
+                            $("#error_people").html(arg.msg.people)
+                        }
+
+                    }
+                })
+
+            })
+
+        }
+
     </script>
 {% endblock %}

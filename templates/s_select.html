@@ -1,0 +1,155 @@
+{% extends "s_base.html" %}
+{% block title %}
+    选课
+{% endblock %}
+
+{% block  head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+
+        #appfm p {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(93, 95, 97);
+        }
+
+        #appfm p small {
+            text-align: center;
+            color: red;
+        }
+
+        .table-div {
+            padding-top: 10px;
+        }
+
+        .input-group {
+            padding: 10px;
+            width: 300px;
+            float: right;
+        }
+
+        #searchInputError {
+            font-size: 20px;
+            color: red;
+        }
+
+        .pages {
+            position: relative;
+            left: 50%;
+            width: 400px;
+            margin-left: -150px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <form method="post" action="/s/search">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ fm.content }}
+                <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索&nbsp;<i class="fa fa-search fa-lg"
+                                                                 aria-hidden="true"></i></button>
+      </span>
+                <span id="searchInputError"></span>
+            </div>
+        </form>
+        <div class="content">
+
+            <div class="table-div">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>课程类型</th>
+                        <th>任课教师</th>
+                        <th>上课时间/教室</th>
+                        <th>授课学院</th>
+                        <th>学分</th>
+                        <th>课程简介</th>
+                        <th>上线日期</th>
+                        <th>截止日期</th>
+                        <th>选课名额</th>
+                        <th><i class="fa fa-ellipsis-h"></i></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tb">
+                    {% if course_pool %}
+
+                        {% for cour in course_pool %}
+                            <tr cno="{{ cour.course_no }}"
+                                    {% if cour.course_choosed_student == cour.course_choosed_student %}
+                                style="background-color: indianred"
+                                    {% endif %}
+                            >
+                                <td>{{ cour.course_no }}</td>
+                                <td>{{ cour.course_name }}</td>
+                                <td>{{ cour.get_course_type_display }}</td>
+                                <td>{{ cour.course_teacher }}</td>
+                                <td>{{ cour.get_course_week_display }},{{ cour.get_course_time_display }}/{{ cour.get_course_classroom_display }}</td>
+                                <td>{{ cour.get_course_college_display }}</td>
+                                <td>{{ cour.course_credit }}</td>
+                                <td>{{ cour.course_desc }}</td>
+                                <td>{{ cour.course_online_time }}</td>
+                                <td>{{ cour.course_close_time }}</td>
+                                <td>{{ cour.course_choosed_student }} / {{ cour.course_total_people }}</td>
+                                <td style="width: 8%">
+                                    <button type="button" class="btn btn-default btn-sm" onclick="select(this)">
+                                        <i class="fa fa-plus-square fa-2x" aria-hidden="true" title="选择该课程"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="12"><h1 style="color: silver;text-align: center">目前暂无课程发布</h1></td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+                <div class="pages">
+                    {% if obj.num_pages > 1 %}
+                        <ul class="pagination">
+                            <li>
+                                {{ obj.page_range_str|safe }}
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#nav2").addClass("active");
+
+        function select(t) {
+            var cno = $(t).parent().parent().attr("cno");
+            $.ajax({
+                url: 'select.html',
+                data: {"csrfmiddlewaretoken": '{{ csrf_token }}', "cno": cno},
+                dataType: 'JSON',
+                type: 'POST',
+                success: function (arg) {
+                    if (arg.status) {
+                        alert("选课成功!");
+                        window.location.reload()
+                    } else {
+                        alert("课程已无名额，请联系任课教师");
+                        window.location.reload();
+                    }
+
+                }
+
+            })
+
+        }
+
+    </script>
+{% endblock %}

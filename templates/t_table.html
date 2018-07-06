@@ -1,0 +1,151 @@
+{% extends "t_base.html" %}
+
+{% block title %}
+    课程表
+{% endblock %}
+
+{% block head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+
+        .table-div {
+            padding-top: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        table td {
+            empty-cells: show;
+        }
+
+        caption {
+            font-size: 40px;
+            text-align: center;
+        }
+
+        th {
+            text-align: center;
+            width: 180px;
+        }
+
+        td {
+            width: 200px;
+            height: 60px;
+            text-align: center;
+            word-break: break-all;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="content">
+            <div class="table-div">
+                <table class="table table-bordered" id="tb">
+                    <caption align="top">课程表</caption>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>周一</th>
+                        <th>周二</th>
+                        <th>周三</th>
+                        <th>周四</th>
+                        <th>周五</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>08:00-09:50</th>
+                        {% for i in weeks %}
+                            <td>{% for c in courses %}{% if c.course_time == 1 and c.course_week == i %}
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <th>09:10-12:00</th>
+                        {% for i in weeks %}
+                            <td>{% for c in courses %}{% if c.course_time == 2 and c.course_week == i %}
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th colspan="6" style="text-align: center;height: 20px; font-size: 18px">
+                            <small class="text-muted">午休时间</small>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>13:30-15:10</th>
+                        {% for i in weeks %}
+
+                            <td>{% for c in courses %}{% if c.course_time == 3 and c.course_week == i %}
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>15:20-17:00</th>
+                        {% for i in weeks %}
+
+                            <td>{% for c in courses %}{% if c.course_time == 4 and c.course_week == i %}
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th colspan="6" style="text-align: center;height: 20px; font-size: 18px">
+                            <small class="text-muted">晚饭时间</small>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>19:00-21:00</th>
+                        {% for i in weeks %}
+
+                            <td>{% for c in courses %}{% if c.course_time == 5 and c.course_week == i %}
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#nav4").addClass("active");
+        $(function () {
+            BkEvent();
+        });
+
+        function randomm(arry) {
+            return arry[Math.floor(Math.random() * arry.length)]
+        }
+
+        function BkEvent() {
+            var clss = ["success", "danger", "warning", "info"];
+            var tds = $("td");
+            for (var t = 0; t < tds.length; t++) {
+                var td = tds.eq(t).html();
+                if (td != '') {
+                    tds.eq(t).addClass(randomm(clss));
+                }
+            }
+
+        }
+
+    </script>
+
+{% endblock %}

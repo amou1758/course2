@@ -49,6 +49,7 @@ class PubForm(forms.ModelForm):
 
 class AppForm(forms.ModelForm):
     course_total_people = fields.IntegerField(
+        initial=30,
         min_value=10,
         max_value=200,
         required=True,
@@ -62,3 +63,29 @@ class AppForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ["course_week", "course_time", "course_classroom", "course_total_people", "course_type"]
+
+
+class ExtendForm(forms.Form):
+    people = forms.IntegerField(
+        widget=widgets.NumberInput(),
+        initial=0,
+        min_value=0,
+        max_value=100,
+        required=True,
+        validators=[RegexValidator(r'^\d{1,3}$', "输入正整数")],
+        error_messages={
+            "invalid": "课程名额扩容应该在1-100之间",
+        }
+    )
+
+    days = forms.ChoiceField(
+        choices=((0, 0), (1, 1), (2, 2), (3, 3,), (4, 4), (5, 5), (6, 6), (7, 7))
+    )
+
+
+class CourseSearchForm(forms.Form):
+    content = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入课程号或课程名"}),
+        max_length=30
+    )
