@@ -37,12 +37,7 @@
             color: black;
         }
 
-        .pages {
-            position: relative;
-            left: 50%;
-            width: 400px;
-            margin-left: -150px;
-        }
+
 
 
     </style>
@@ -97,16 +92,7 @@
                     {% endif %}
                     </tbody>
                 </table>
-                <div class="pages">
-                    {% if obj.num_pages %}
-                        <ul class="pagination">
-                            <li>
-
-                                {{ obj.page_range_str|safe }}
-                            </li>
-                        </ul>
-                    {% endif %}
-                </div>
+                {% include 'include/paginatior.html' %}
             </div>
         </div>
     </div>

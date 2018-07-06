@@ -205,7 +205,9 @@ def s_index(request):
     today_courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True,
                                           course_week=today_).order_by("course_time")
     news = News.objects.filter(Q(watcher=1) | Q(watcher=3)).order_by("-mtime")
-    return render(request, "s_index.html", {"today_course": today_courses, "news": news})
+    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='s_select.html')
+    news = news[obj.start():obj.end()]
+    return render(request, "s_index.html", {"obj": obj, "today_course": today_courses, "news": news})
 
 
 def s_course_pool(request):

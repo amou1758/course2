@@ -1,0 +1,9 @@
+<div class="pages">
+    {% if obj.num_pages > 1 %}
+        <ul class="pagination">
+            <li>
+                {{ obj.page_range_str|safe }}
+            </li>
+        </ul>
+    {% endif %}
+</div>
