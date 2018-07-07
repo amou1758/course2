@@ -80,6 +80,7 @@
                     {% if applied_course_list %}
                         {% for c in applied_course_list %}
                             <tr class="trid" cno="{{ c.course_no }}"
+                                cname="{{ c.course_name }}"
                                 cstatus="{{ c.course_status }}"
                                 style="height: 50px"
                             >
@@ -120,12 +121,14 @@
                                     <td> ——</td>
                                 {% elif c.course_status == 4 %}
                                     <td>审批通过已上线</td>
-                                    <td style="width: 8%;">&nbsp;<a href=""> <i class="fa fa-plus-square fa-2x"
-                                                                                aria-hidden="true" title="课程扩容"
-                                                                                onclick="extend(this)"></i></a>
+                                    <td style="width: 10%;">&nbsp;<a href=""> <i class="fa fa-plus-square fa-2x"
+                                                                                 aria-hidden="true" title="课程扩容"
+                                                                                 onclick="extend(this)"></i></a>
                                         &nbsp;&nbsp;
                                         <a href=""><i class="fa fa-arrow-circle-down fa-2x" aria-hidden="true"
                                                       title="下线该课程" onclick="offline(this)"></i></a>
+
+                                        &nbsp;&nbsp;<a href=""><i class="fa fa-table fa-2x" aria-hidden="true"></i></a>
                                     </td>
                                 {% elif c.course_status == 5 %}
                                     <td>课程已下线</td>
@@ -133,9 +136,9 @@
                                         <a href=""> <i class="fa fa-arrow-circle-up fa-2x" aria-hidden="true"
                                                        title="上线课程"
                                                        onclick="online(this)"></i></a>
+
+                                        &nbsp;&nbsp;<a href=""><i class="fa fa-table fa-2x" aria-hidden="true"></i></a>
                                     </td>
-
-
                                 {% endif %}
                             </tr>
                         {% endfor %}

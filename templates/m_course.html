@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <style>
+        .input-group {
+            padding-top: 10px;
+            padding-bottom: 20px;
+            width: 300px;
+        }
+
+        .title-r {
+            margin-top: -50px;
+            padding-bottom: 10px;
+            float: right;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .show {
+            display: inline;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <form method="post" action="m_course">
+        {% csrf_token %}
+        <div class="input-group">
+            {{ fm.content }}
+            <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索&nbsp;<i class="fa fa-search fa-lg"
+                                                                 aria-hidden="true"></i></button>
+
+                </span>
+            <span id="searchInputError"></span>
+        </div>
+    </form>
+
+    <div class="title-r">
+        <span><a href="/e/pubCourse.html" target="_parent"><button class="btn-default btn">发布课程 <i
+                class="fa fa-plus-square" aria-hidden="true"></i></button></a></span>
+        {#        <span><button class="btn-default btn" onclick="online()">上线选中课程 <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></button></span>#}
+        {#        <span><button class="btn-default btn" onclick="offline()">下线选中课程 <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></button></span>#}
+        <span><button class="btn-danger btn" onclick="Del()">删除选中课程 <i class="fa fa-trash"
+                                                                       aria-hidden="true"></i></button></span>
+
+    </div>
+    <div>
+        <table class="table table-bordered table-condensed sort-table">
+            <thead>
+
+            <tr>
+                <td><input type="checkbox" onclick="SelectAll()" id="select">
+                    <small>全选</small>
+                </td>
+                <th>课程号</th>
+                <th>课程名</th>
+                <th>开课学院</th>
+                <th>任课教师</th>
+                <th>课程状态</th>
+                <th>选课人数/课程名额</th>
+                <th><i class="fa fa-ellipsis-h"></i></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if courses %}
+                {% for c in courses %}
+                    <tr class="first-tr" cno="{{ c.course_no }}"
+                            {% if c.course_status == 4 %}
+                        style="background-color: darkseagreen"
+                            {% elif c.course_status == 5 %}
+                        style="background-color: black;color: white"
+                            {% endif %}
+                    >
+                        <td><input type="checkbox" name="course"></td>
+                        <td>{{ c.course_no }}</td>
+                        <td>{{ c.course_name }}</td>
+                        <td>{{ c.get_course_college_display }}</td>
+                        <td>
+                            {% if c.course_teacher %}
+                                {{ c.course_teacher }}
+                            {% else %} ————
+                            {% endif %}
+                        </td>
+                        {% if c.course_status == 0 %}
+                            <td>课程新发布</td>
+                        {% elif c.course_status == 1 %}
+                            <td>课程已被申请待审批</td>
+                        {% elif c.course_status == 2 %}
+                            <td>课程审批通过</td>
+                        {% elif c.course_status == 3 %}
+                            <td>课程审批未通过</td>
+                        {% elif c.course_status == 4 %}
+                            <td>课程已上线</td>
+                        {% elif c.course_status == 5 %}
+                            <td>课程已关闭</td>
+                        {% endif %}
+                        <td>{{ c.course_choosed_student }} / {{ c.course_total_people }}</td>
+                        <td><a href="" onclick="detail(this)"><i class="fa fa-th" aria-hidden="true"
+                                                                 title="查看详情"></i></a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="8"><h1 style="color: silver;text-align: center">没有搜索到┭┮﹏┭┮</h1></td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+    {% include 'include/paginatior.html' %}
+
+</div>
+
+<script>
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+
+    function detail(t) {
+        window.parent.$('#courseDetail').modal('show');
+        var cno = $(t).parent().parent().attr('cno');
+        $.ajax({
+            url: 'm_course_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"cno": cno},
+            success: function (arg) {
+                window.parent.$("#courseDetail").find("input").each(function (i) {
+
+                    window.parent.$(this).val(arg[i]);
+                })
+            }
+
+        })
+    }
+
+    function SelectAll() {
+        v = $("#select").prop("checked");
+        if (v == true) {
+            $(":checkbox").prop("checked", true);
+        } else {
+            $(":checkbox").prop("checked", false);
+        }
+
+    }
+
+    function Del() {
+        var arr = new Array();
+        $("input[name='course']:checked").each(function () {
+            arr.push($(this).parent().parent().attr("cno"))
+        });
+
+        if (arr == '') {
+            alert("没有选择任何课程！");
+        } else {
+            $.ajax({
+                url: 'm_del',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"cno": arr},
+                success: function (arg) {
+                    if (arg.status == true) {
+                        alert("删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败！请重新尝试");
+                    }
+                }
+            })
+        }
+    }
+
+
+    {#function offline() {#}
+    {#    var arr = new Array();#}
+    {#    $("input[name='course']:checked").each(function () {#}
+    {#        arr.push($(this).parent().parent().attr("cno"))#}
+    {#    });#}
+    {#    if (arr == '') {#}
+    {#        alert("没有选择任何课程！");#}
+    {#    } else {#}
+    {#        $.ajax({#}
+    {#            url: 'm_offline',#}
+    {#            type: 'POST',#}
+    {#            dataType: "JSON",#}
+    {#            data: {"cno": arr},#}
+    {#            success: function (arg) {#}
+    {##}
+    {#                if (arg.status==true) {#}
+    {#                    alert("下线成功！");#}
+    {#                    window.location.reload();#}
+    {#                } else {#}
+    {#                    alert(arg.msg);#}
+    {#                }#}
+    {#            }#}
+    {#        })#}
+    {#    }#}
+    {#}#}
+        {##}
+        {##}
+        {##}
+        {#function online() {#}
+        {##}
+        {#    var arr = new Array();#}
+        {#    $("input[name='course']:checked").each(function () {#}
+        {#        arr.push($(this).parent().parent().attr("cno"))#}
+        {#    });#}
+        {##}
+        {#    if (arr == '') {#}
+        {#        alert("没有选择任何课程！");#}
+        {#    } else {#}
+        {#        $.ajax({#}
+        {#            url: 'm_online',#}
+        {#            type: 'POST',#}
+        {#            dataType: "JSON",#}
+        {#            data: {"cno": arr},#}
+        {#            success: function (arg) {#}
+        {##}
+        {#                if (arg.status==true) {#}
+        {#                    alert("上线成功！");#}
+        {#                    window.location.reload();#}
+        {#                } else {#}
+        {#                    alert("上线失败！请重新尝试");#}
+        {#                }#}
+        {#            }#}
+        {#        })#}
+        {#    }#}
+        {
+    #}#}
+</script>
+
+</body>
+</html>

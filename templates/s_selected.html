@@ -67,7 +67,6 @@
                         {% for c in selected_courses %}
                             <tr class="trid" cno="{{ c.course_no }}"
                                 cstatus="{{ c.course_status }}"
-
                                 style="height: 50px"
                             >
                                 <td>{{ c.course_no }}</td>
@@ -79,8 +78,11 @@
                                 <td>{{ c.get_course_classroom_display }}</td>
                                 <td>{{ c.get_course_week_display }} {{ c.get_course_time_display }}</td>
                                 <td>{{ c.course_credit }}</td>
-                                <td><a href="" onclick="quit(this)"><i class="fa fa-times-circle fa-2x"
-                                                                       aria-hidden="true" title="退选该课程"></i></a></td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="quit(this)">退课 &nbsp;<i
+                                            class="fa fa-times-circle"
+                                            aria-hidden="true" title="退选该课程"></i></button>
+                                </td>
 
                             </tr>
                         {% endfor %}

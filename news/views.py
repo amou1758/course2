@@ -11,6 +11,7 @@ from news.models import News
 
 
 def new_news(request):
+    n = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if request.method == "GET":
         obj = NewsForm()
         return render(request, "e_newNews.html", {"obj": obj})
@@ -24,7 +25,8 @@ def new_news(request):
                     content=obj.cleaned_data.get("content"),
                     watcher=obj.cleaned_data.get("watcher"),
                     created_by=request.user,
-                    modify_by=request.user
+                    modify_by=request.user,
+                    mtime=n
                 )
 
                 ret["msg"] = "发布成功"
@@ -70,7 +72,7 @@ def mod_news(request, nid):
                 content=obj.cleaned_data.get("content"),
                 watcher=obj.cleaned_data.get("watcher"),
                 modify_by=request.user,
-                mtime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                mtime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )
             try:
                 ret["msg"] = "修改成功"

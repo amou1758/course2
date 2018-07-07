@@ -23,10 +23,25 @@
                     </div>
                     <div class="panel-body">
                         {% if app_list %}
+                            <table class="table">
+                                <thead>
+                                <th>课程号</th>
+                                <th>课程名</th>
+                                <th>申请教师</th>
+                                <th>申请时间</th>
+                                </thead>
+
+                                <tbody>
                             {% for a in app_list %}
-                                <h3>{{ a.name }} --- {{ a.teacher.name }} --- {{ a.credit }}
-                                    --- {{ a.classroom.name }} </h3>
+                                <tr>
+                                    <td>{{ a.course_no }}</td>
+                                    <td>{{ a.course_name }}</td>
+                                    <td>{{ a.course_teacher }}</td>
+                                    <td>{{ a.course_applied_time }}</td>
+                                </tr>
                             {% endfor %}
+                                </tbody>
+                            </table>
                             <a href="/e/approve.html">
                                 <button class="btn btn-primary">进行审批</button>
                             </a>

@@ -15,7 +15,7 @@ from .models import Course, StudentCourse
 
 
 def e_index(request):
-    app_list = Course.objects.filter(course_status=1).order_by('course_applied_time')
+    app_list = Course.objects.filter(course_status=1, course_visable=True).order_by('course_applied_time')
     app_counts = app_list.count()
     news = News.objects.all()
     return render(request, 'e_index.html', locals())
@@ -30,7 +30,7 @@ def pub_course(request):
     if request.method == "GET":
         courses = Course.objects.all().order_by('-course_ctime')
         pub_form = PubForm()
-        obj = MyPagination(courses.count(), request.GET.get('p'), 10, url='e_pubCourse.html')
+        obj = MyPagination(courses.count(), request.GET.get('p'), 15, url='pubCourse.html')
         courses = courses[obj.start():obj.end()]
         return render(request, "e_pubCourse.html", {"pub_form": pub_form, "courses": courses, "obj": obj})
     if request.method == "POST":
@@ -61,6 +61,40 @@ def pub_course(request):
             return HttpResponse(json.dumps(ret))
 
 
+def e_aprrove(request):
+    app_list = Course.objects.filter(course_status=1)
+    return render(request, "e_approve.html", {"app_list": app_list})
+
+
+def pass_(request):
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        cno = request.POST.get("cno")
+        Course.objects.filter(course_no=cno).update(
+            course_status=2,
+            course_approver=request.user
+        )
+
+        ret["msg"] = "该课程通过审批"
+        return HttpResponse(json.dumps(ret))
+
+
+def no_pass(request):
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        cno = request.POST.get("cno")
+        Course.objects.filter(course_no=cno).update(
+            course_status=3,
+            course_approver=request.user
+        )
+        ret["msg"] = "该课程未通过审批"
+        return HttpResponse(json.dumps(ret))
+
+
+def m_manage_center(request):
+    return render(request, "e_manage_center.html")
+
+
 def t_index(request):
     today_ = datetime.datetime.now().weekday() + 1
     today_courses = Course.objects.filter(course_choosed_student__gte=1, course_teacher=request.user,
@@ -68,12 +102,11 @@ def t_index(request):
     news = News.objects.filter(Q(watcher=1) | Q(watcher=2)).order_by("-mtime")
     return render(request, "t_index.html", {"today_course": today_courses, "news": news})
 
-
 def t_apply(request):
     if request.method == "GET":
         obj = AppForm()
         courses = Course.objects.filter(course_status=0).order_by('-course_ctime')
-        obj2 = MyPagination(courses.count(), request.GET.get('p'), 10, url='t_apply.html')
+        obj2 = MyPagination(courses.count(), request.GET.get('p'), 10, url='apply.html')
         courses = courses[obj2.start():obj2.end()]
         return render(request, "t_apply.html", {"courses": courses, "obj": obj, "obj2": obj2})
     if request.method == "POST":
@@ -91,6 +124,7 @@ def t_apply(request):
                     course_total_people=obj.cleaned_data.get("course_total_people"),
                     course_type=obj.cleaned_data.get("course_type"),
                     course_status=1
+
                 )
 
                 ret["msg"] = "申请成功"
@@ -99,7 +133,7 @@ def t_apply(request):
                 if str(
                         e) == "UNIQUE constraint failed: course_course.course_teacher_id, course_course.course_week, course_course.course_time":
                     ret["status"] = False
-                    ret["msg"] = "该教室已被使用，请另选择时间段或教室"
+                    ret["msg"] = "该时段，你已经有其他课程了！"
                     return HttpResponse(json.dumps(ret, ensure_ascii=False))
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
@@ -108,12 +142,10 @@ def t_apply(request):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
-
 def t_applied(request):
     applied_course_list = Course.objects.filter(course_teacher=request.user).order_by("-course_applied_time")
     extend_obj = ExtendForm()
     return render(request, "t_applied.html", {"applied_course_list": applied_course_list, "obj": extend_obj})
-
 
 def t_online(request):
     if request.method == "POST":
@@ -128,7 +160,6 @@ def t_online(request):
             course_close_time=(n + d).strftime("%Y-%m-%d %H:%M"),
         )
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
-
 
 def t_offline(request):
     if request.method == "POST":
@@ -164,40 +195,18 @@ def t_extend(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+def t_student_list(request):
+    pass
+
 def t_table(request):
     courses = Course.objects.filter(course_teacher=request.user, course_choosed_student__gte=1)
     weeks = [i for i in range(1, 6)]
     return render(request, "t_table.html", {"courses": courses, "weeks": weeks})
 
 
-def e_aprrove(request):
-    app_list = Course.objects.filter(course_status=1)
-    return render(request, "e_approve.html", {"app_list": app_list})
 
 
-def pass_(request):
-    if request.method == "POST":
-        ret = {"status": True, "msg": None}
-        cno = request.POST.get("cno")
-        Course.objects.filter(course_no=cno).update(
-            course_status=2,
-            course_approver=request.user
-        )
 
-        ret["msg"] = "该课程通过审批"
-        return HttpResponse(json.dumps(ret))
-
-
-def no_pass(request):
-    if request.method == "POST":
-        ret = {"status": True, "msg": None}
-        cno = request.POST.get("cno")
-        Course.objects.filter(course_no=cno).update(
-            course_status=3,
-            course_approver=request.user
-        )
-        ret["msg"] = "该课程未通过审批"
-        return HttpResponse(json.dumps(ret))
 
 
 def s_index(request):
@@ -205,7 +214,7 @@ def s_index(request):
     today_courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True,
                                           course_week=today_).order_by("course_time")
     news = News.objects.filter(Q(watcher=1) | Q(watcher=3)).order_by("-mtime")
-    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='s_select.html')
+    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='select.html')
     news = news[obj.start():obj.end()]
     return render(request, "s_index.html", {"obj": obj, "today_course": today_courses, "news": news})
 
@@ -217,6 +226,7 @@ def s_course_pool(request):
                                               course_type=1) | Q(course_online=True, course_type=2)).exclude(
             studentcourse__student=request.user) \
             .order_by('-course_online_time')
+
 
         return render(request, "s_select.html", {"fm": fm, "course_pool": course_pool})
 
@@ -257,7 +267,7 @@ def s_search_course(request):
                     studentcourse__student=request.user) \
                     .order_by('-course_online_time')
 
-            obj = MyPagination(course_.count(), request.GET.get("p"), 10, url='s_select.html')
+            obj = MyPagination(course_.count(), request.GET.get("p"), 10, url='select.html')
             course_pool = course_[obj.start():obj.end()]
             return render(request, 's_select.html', {"obj": obj, "fm": fm, "course_pool": course_pool})
         else:
@@ -269,7 +279,7 @@ def s_selected(request):
                                              studentcourse__is_choosed=True
                                              )
 
-    obj = MyPagination(selected_courses.count(), request.GET.get("p"), 10, url='s_select.html')
+    obj = MyPagination(selected_courses.count(), request.GET.get("p"), 10, url='select.html')
     selected_courses = selected_courses[obj.start():obj.end()]
     return render(request, "s_selected.html", {"obj": obj, "selected_courses": selected_courses})
 

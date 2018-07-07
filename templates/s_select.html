@@ -78,7 +78,7 @@
 
                         {% for cour in course_pool %}
                             <tr cno="{{ cour.course_no }}"
-                                    {% if cour.course_choosed_student == cour.course_choosed_student %}
+                                    {% if cour.course_choosed_student == cour.course_total_people %}
                                 style="background-color: indianred"
                                     {% endif %}
                             >
@@ -94,8 +94,8 @@
                                 <td>{{ cour.course_close_time }}</td>
                                 <td>{{ cour.course_choosed_student }} / {{ cour.course_total_people }}</td>
                                 <td style="width: 8%">
-                                    <button type="button" class="btn btn-default btn-sm" onclick="select(this)">
-                                        <i class="fa fa-plus-square fa-2x" aria-hidden="true" title="选择该课程"></i>
+                                    <button type="button" class="btn btn-default btn-sm" onclick="select(this)">选课
+                                        <i class="fa fa-plus-square fa-lg" aria-hidden="true" title="选择该课程"></i>
                                     </button>
 
                                 </td>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <style>
+        .input-group {
+            padding-top: 10px;
+            padding-bottom: 20px;
+            width: 300px;
+        }
+
+        .title-r {
+            margin-top: -50px;
+            padding-bottom: 10px;
+            float: right;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .show {
+            display: inline;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <form method="post" action="m_course">
+        {% csrf_token %}
+        <div class="input-group">
+            {{ fm.content }}
+            <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索&nbsp;<i class="fa fa-search fa-lg"
+                                                                 aria-hidden="true"></i></button>
+
+                </span>
+            <span id="searchInputError"></span>
+        </div>
+    </form>
+
+    <div class="title-r">
+        <span><a href="/e/newNews.html" target="_parent"><button class="btn-default btn">新建通知 <i
+                class="fa fa-plus-square" aria-hidden="true"></i></button></a></span>
+        {#        <span><button class="btn-default btn" onclick="online()">上线选中课程 <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></button></span>#}
+        {#        <span><button class="btn-default btn" onclick="offline()">下线选中课程 <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></button></span>#}
+        <span><button class="btn-danger btn" onclick="Del()">删除选中通知 <i class="fa fa-trash"
+                                                                       aria-hidden="true"></i></button></span>
+
+    </div>
+    <div>
+        <table class="table table-bordered table-condensed sort-table">
+            <thead>
+
+            <tr>
+                <td><input type="checkbox" onclick="SelectAll()" id="select">
+                    <small>全选</small>
+                </td>
+                <th>标题</th>
+                <th>内容</th>
+                <th>创建时间</th>
+                <th>创建者</th>
+                <th><i class="fa fa-ellipsis-h"></i></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if news %}
+                {% for n in news %}
+                    <tr class="first-tr" nid="{{ n.id }}">
+                        <td><input type="checkbox" name="course"></td>
+                        <td><b>{{ n.title|slice:"10" }}</b></td>
+                        <td>{{ n.content|striptags|slice:":20" }}<b>...</b></td>
+                        <td>{{ n.ctime }}</td>
+                        <td>{{ n.created_by }}</td>
+                        <td style="width: 25%">
+                            <button class="btn btn-primary btn-sm" onclick="newsDetail(this);">详情 &nbsp;<i
+                                    class="fa fa-align-justify" aria-hidden="true"></i></button>
+                            <a href="{% url 'mod_news' n.id %}" target="_parent">
+                                <button class="btn btn-default btn-sm">编辑 &nbsp;<i class="fa fa-pencil-square-o"
+                                                                                   aria-hidden="true"></i></button>
+                            </a>
+                            <button onclick="DelOne(this)" class="btn btn-danger btn-sm">删除 &nbsp;<i
+                                    class="fa fa-trash-o" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5"><h1 style="color: silver;text-align: center">未搜索到相关新闻</h1></td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+    {% include 'include/paginatior.html' %}
+
+</div>
+
+<script>
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+
+    function newsDetail(t) {
+        window.parent.$('#newsDetail').modal('show');
+        var nid = $(t).parent().parent().attr('nid');
+        $.ajax({
+            url: '/m_news_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"nid": nid},
+            success: function (arg) {
+                window.parent.$("#newsDetail h3").html("<b>标题:</b> " + arg[0]);
+                window.parent.$("#newsDetail .content").html("<b>正文:</b><hr \>" + arg[1]);
+                window.parent.$("#newsDetail #ctime").html("<b>创建时间:</b>" + arg[2] + "<hr >");
+                window.parent.$("#newsDetail #created_by").html("<b>创建者:</b>" + arg[3] + "<hr >");
+                window.parent.$("#newsDetail #mtime").html("<b>最后修改时间:</b>" + arg[4] + "<hr >");
+                if (arg[5] == 3) {
+                    arg[5] = "教师";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[5] + "<hr >");
+                } else if (arg[5] == 2) {
+                    arg[2] = "学生";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[5] + "<hr >");
+                } else {
+                    arg[5] = "所有人";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> " + arg[5] + "<hr >");
+
+                }
+            }
+
+        })
+    }
+
+    function SelectAll() {
+        v = $("#select").prop("checked");
+        if (v == true) {
+            $(":checkbox").prop("checked", true);
+        } else {
+            $(":checkbox").prop("checked", false);
+        }
+
+    }
+
+    function DelOne(t) {
+        var nid = $(t).parent().parent().attr("nid");
+        console.log(nid)
+        $.ajax({
+            url: 'm_news_del',
+            type: 'POST',
+            dataType: "JSON",
+            data: {"nid[]": nid},
+            success: function (arg) {
+                if (arg.status == true) {
+                    alert("删除成功！");
+                    window.location.reload();
+                } else {
+                    alert("删除失败！请重新尝试");
+                }
+            }
+        })
+    }
+
+    function Del() {
+        var arr = new Array();
+        $("input[name='course']:checked").each(function () {
+            arr.push($(this).parent().parent().attr("nid"))
+        });
+
+        if (arr == '') {
+            alert("没有选择任何课程！");
+        } else {
+            $.ajax({
+                url: 'm_news_del',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"nid": arr},
+                success: function (arg) {
+                    if (arg.status == true) {
+                        alert("删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败！请重新尝试");
+                    }
+                }
+            })
+        }
+    }
+
+
+</script>
+
+</body>
+</html>

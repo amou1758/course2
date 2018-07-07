@@ -51,7 +51,7 @@
         </div>
 
         <div class="table-div">
-            <table class="table table-bordered">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
 
@@ -84,7 +84,7 @@
                             {% elif cour.course_status == 3 %}
                                 <td style="color: red">申请未通过</td>
                             {% else %}
-                                <td style="color: #1f292e">课程已下线</td>
+                                <td style="color: coral">课程已下线</td>
 
                             {% endif %}
                             <td>{{ cour.course_starter.name }}</td>
@@ -99,13 +99,7 @@
 
                 </tbody>
             </table>
-            {% if obj.num_pages %}
-                <ul class="pagination">
-                    <li>
-                        {{ obj.page_range_str|safe }}
-                    </li>
-                </ul>
-            {% endif %}
+            {% include 'include/paginatior.html' %}
         </div>
 
     </div>
@@ -143,7 +137,12 @@
                             </p>
                             <p>
                                 <span>{{ pub_form.course_desc.label }}</span>
-                                {{ pub_form.course_desc }}</p>
+                                {{ pub_form.course_desc }}
+                                <br>
+                                <small id="errDes"></small>
+                            </p>
+
+
                             <p>
                                 <span>{{ pub_form.course_college.label }}</span>
                                 {{ pub_form.course_college }}
@@ -228,6 +227,7 @@
                         $("#errName").html(arg.msg.course_name);
                         $("#errCre").html(arg.msg.course_credit);
                         $("#errCol").html(arg.msg.course_college);
+                        $("#errDes").html(arg.msg.course_desc);
 
                     }
                 }

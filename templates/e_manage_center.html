@@ -1,0 +1,410 @@
+{% extends 'e_base.html' %}
+{% block title %}
+    管理中心
+{% endblock %}
+{% block head %}
+    <style>
+
+        .content {
+            min-height: 600px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .nav-left {
+            float: left;
+            width: 20%;
+            background-color: rgb(50, 120, 180);
+            min-height: inherit;
+
+        }
+
+        .nav-right {
+
+            float: right;
+            width: 80%;
+            min-height: 620px;
+
+        }
+
+        .list-group {
+            margin: 10px;
+            padding-top: 20px;
+
+        }
+
+        .list-group-item {
+            background-color: rgb(50, 120, 180);
+            color: white;
+            text-align: left;
+            font-size: 20px;
+        }
+
+        .press {
+            background-color: white;
+            color: rgb(50, 120, 180);
+        }
+
+        iframe {
+            width: 110%;
+            height: 620px;
+            border: 0px;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        #err_msg {
+            color: red;
+            font-size: 20px;
+        }
+
+        #newsDetail .modal-content {
+            overflow: hidden;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+
+    <div class="content container">
+        <div class="nav-left">
+            <ul class="list-group">
+                <a href="#">
+                    <li class="list-group-item" id="left-nav1" onclick="m_course()">课程管理</li>
+                </a>
+                <a href="#">
+                    <li class="list-group-item" id="left-nav2" onclick="m_news()">消息管理</li>
+                </a>
+                <a href="#">
+                    <li class="list-group-item" id="left-nav3" onclick="m_teacher()">教师管理</li>
+                </a>
+                <a href="#">
+                    <li class="list-group-item" id="left-nav4" onclick="m_student()">学生管理</li>
+                </a>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <iframe src="/m_course">
+            </iframe>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="courseDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">课程详情</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+
+                        <p>
+                            <span>课程号</span>
+                            <input class="form-control" type="text" disabled name="course_no">
+                        </p>
+                        <p>
+                        <p>
+                            <span>课程名</span>
+                            <input class="form-control" type="text" disabled name="course_name">
+                        </p>
+                        <p>
+                        <p>
+                            <span>课程发布时间</span>
+                            <input class="form-control" type="text" disabled name="course_ctime">
+                        </p>
+                        <p>
+                        <p>
+                            <span>学分</span>
+                            <input class="form-control" type="text" disabled name="course_credit">
+                        </p>
+                        <p>
+                        <p>
+                            <span>课程简介</span>
+                            <input class="form-control" type="text" disabled name="course_desc">
+                        </p>
+                        <p>
+                            <span>发布者</span>
+                            <input class="form-control" type="text" disabled name="course_starter">
+
+                        </p>
+                        <p>
+                            <span>授课学院</span>
+                            <input class="form-control" type="text" disabled name="course_college">
+
+                        </p>
+                        <p>
+                            <span>任课教师</span>
+                            <input class="form-control" type="text" disabled name="teacher">
+
+                        </p>
+                        <p>
+                            <span>课程类型</span>
+                            <input class="form-control" type="text" disabled name="course_type">
+
+                        </p>
+                        <p>
+                            <span>上课地点</span>
+                            <input class="form-control" type="text" disabled name="classroom">
+
+                        </p>
+                        <p>
+                            <span>上课时间</span>
+                            <input class="form-control" type="text" disabled name="course_week">
+
+                        </p>
+
+                        <p>
+                            <span>审批者</span>
+                            <input class="form-control" type="text" disabled name="approver">
+
+                        </p>
+                        <p>
+                            <span>课程名额</span>
+                            <input class="form-control" type="text" disabled name="course_total_people">
+
+                        </p>
+                        <p>
+                            <span>课程已选人数</span>
+                            <input class="form-control" type="text" disabled name="course_choosed_student">
+
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"></h3>
+                    </div>
+                    <div class="panel-body content">
+                    </div>
+                    <div class="panel-footer">
+                        <small id="created_by"></small>
+                        <small id="ctime"></small>
+                        <small id="modify_by"></small>
+                        <small id="mtime"></small>
+                        <small id="watcher"></small>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $("#nav5").addClass("active");
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+
+        var i = $(".tno-setting input").attr("readonly", true);
+        var j = $(".sno-setting input").attr("readonly", true);
+
+
+        function editT() {
+
+            $("#err_msg2").html("");
+            $("#errName2").html("");
+            $("#errNo2").html("");
+            $("#errGender2").html("");
+            $("#errCardId2").html("");
+            $("#errCollege2").html("");
+            $("#errPos2").html("");
+            $("#errEmail2").html("");
+            $("#errTel2").html("");
+
+            $.ajax({
+                url: "#",
+                type: "POST",
+                dataType: "json",
+                data: $("#edit-fm").serialize(),
+                success: function (arg) {
+                    if (arg.status == true) {
+                        $("#editTeacher").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+                    } else {
+                        console.log("failed");
+                        console.log(arg.msg.tel);
+                        $("#err_msg2").html(arg.msg).css("color", "red");
+                        $("#errName2").html(arg.msg.name).css("color", "red");
+                        $("#errGender2").html(arg.msg.gender).css("color", "red");
+                        $("#errCardId2").html(arg.msg.card_id).css("color", "red");
+                        $("#errCollege2").html(arg.msg.college_id).css("color", "red");
+                        $("#errPos2").html(arg.msg.position_id).css("color", "red");
+                        $("#errEmail2").html(arg.msg.email).css("color", "red");
+                        $("#errTel2").html(arg.msg.tel).css("color", "red");
+                    }
+                }
+            })
+        }
+
+        function editS() {
+            $("#err_msg3").html("");
+            $("#errName3").html("");
+            $("#errNo3").html("");
+            $("#errGender3").html("");
+            $("#errCardId3").html("");
+            $("#errCollege3").html("");
+            $("#errPos3").html("");
+            $("#errEmail3").html("");
+            $("#errTel3").html("");
+            $.ajax({
+                url: "#",
+                type: "POST",
+                dataType: "json",
+                data: $("#edit-fm2").serialize(),
+                success: function (arg) {
+                    if (arg.status == true) {
+                        $("#editStudent").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+                    } else {
+                        console.log("failed");
+                        $("#err_msg3").html(arg.msg).css("color", "red");
+                        $("#errName3").html(arg.msg.name).css("color", "red");
+                        $("#errGender3").html(arg.msg.gender).css("color", "red");
+                        $("#errCardId3").html(arg.msg.card_id).css("color", "red");
+                        $("#errCollege3").html(arg.msg.college_id).css("color", "red");
+                        $("#errGrade3").html(arg.msg.grade_id).css("color", "red");
+                        $("#errEmail3").html(arg.msg.email).css("color", "red");
+                        $("#errTel3").html(arg.msg.tel).css("color", "red");
+
+                    }
+                }
+            })
+        }
+
+        function m_course() {
+            $("#left-nav1").addClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src", "/m_course");
+
+
+        }
+
+        function m_news() {
+            $("#left-nav2").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src", "/m_news");
+
+        }
+
+        function m_teacher() {
+            $("#left-nav3").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src", "/m_teacher");
+
+        }
+
+        function m_student() {
+            $("#left-nav4").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("iframe").attr("src", "/m_student");
+
+        }
+
+        function addT() {
+            $("#err_msg").html("");
+            $("#errName").html("");
+            $("#errNo").html("");
+            $("#errGender").html("");
+            $("#errCardId").html("");
+            $("#errCollege").html("");
+            $("#errPos").html("");
+            $("#errEmail").html("");
+            $("#errTel").html("");
+            $.ajax({
+                url: '#',
+                type: "POST",
+                dataType: "JSON",
+                data: $("#fm").serialize(),
+                success: function (arg) {
+                    if (arg.status == true) {
+                        $("#addTeacher").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+                    } else {
+                        console.log("失败");
+                        $("#err_msg").html(arg.msg).css("color", "red");
+                        $("#errName").html(arg.msg.name).css("color", "red");
+                        $("#errNo").html(arg.msg.no).css("color", "red");
+                        $("#errGender").css("color", "red").html(arg.msg.gender).css("color", "red");
+                        $("#errCardId").html(arg.msg.card_id).css("color", "red");
+                        $("#errCollege").html(arg.msg.college_id).css("color", "red");
+                        $("#errPos").html(arg.msg.position_id).css("color", "red");
+                        $("#errEmail").html(arg.msg.email).css("color", "red");
+                        $("#errTel").html(arg.msg.tel).css("color", "red");
+                    }
+                }
+            })
+        }
+
+
+        function addS() {
+            $("#err_msg4").html("");
+            $("#errName4").html("");
+            $("#errNo4").html("");
+            $("#errGender4").html("");
+            $("#errCardId4").html("");
+            $("#errCollege4").html("");
+            $("#errGrade4").html("");
+            $("#errEmail4").html("");
+            $("#errTel4").html("");
+            $.ajax({
+                url: '#',
+                type: "POST",
+                dataType: "JSON",
+                data: $("#fm2").serialize(),
+                success: function (arg) {
+                    if (arg.status == true) {
+                        $("#addStudent").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+                    } else {
+                        console.log("失败");
+                        $("#err_msg4").html(arg.msg).css("color", "red");
+                        $("#errName4").html(arg.msg.name).css("color", "red");
+                        $("#errNo4").html(arg.msg.no).css("color", "red");
+                        $("#errGender4").css("color", "red").html(arg.msg.gender).css("color", "red");
+                        $("#errCardId4").html(arg.msg.card_id).css("color", "red");
+                        $("#errCollege4").html(arg.msg.college_id).css("color", "red");
+                        $("#errGrade4").html(arg.msg.grade_id).css("color", "red");
+                        $("#errEmail4").html(arg.msg.email).css("color", "red");
+                        $("#errTel4").html(arg.msg.tel).css("color", "red");
+                    }
+                }
+
+            })
+        }
+
+    </script>
+{% endblock %}

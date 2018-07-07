@@ -98,7 +98,7 @@
             var nid = $("#newfm").attr("nid");
             console.log(nid);
             $.ajax({
-                url: "mod_news.html" + nid,
+                url: "mod_news.html&" + nid,
                 type: "POST",
                 dataType: "json",
                 data: $("#newfm").serialize(),

@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.validators import RegexValidator
 from django.forms import fields, widgets
 from django import forms
@@ -7,6 +9,7 @@ from course.models import Course
 
 class PubForm(forms.ModelForm):
     course_no = fields.CharField(
+
         required=True,
         label="课程号",
         validators=[RegexValidator(regex='^[0-9]{10}$', message="请输入数字")],
@@ -36,7 +39,7 @@ class PubForm(forms.ModelForm):
 
                                         )
     course_desc = fields.CharField(
-        widget=widgets.TextInput(),
+        widget=widgets.Textarea(),
         max_length=140,
         initial="暂无",
         label="课程描述"
@@ -45,6 +48,18 @@ class PubForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ["course_college", ]
+
+    # 解决form初始化时数据库数据不刷新问题
+    def __init__(self, *args, **kwargs):
+        super(PubForm, self).__init__(*args, **kwargs)
+        cour = Course.objects.last().course_no
+        c_date = cour[:8]
+        n_date = datetime.datetime.now().strftime("%Y%m%d")
+        if n_date > c_date:
+            ini_no = n_date + '01'
+        else:
+            ini_no = str(int(cour) + 1)
+        self.fields['course_no'].initial = ini_no
 
 
 class AppForm(forms.ModelForm):
@@ -87,5 +102,13 @@ class CourseSearchForm(forms.Form):
     content = fields.CharField(
         required=True,
         widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入课程号或课程名"}),
+        max_length=30
+    )
+
+
+class NewsSearchForm(forms.Form):
+    content = fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入标题"}),
         max_length=30
     )
