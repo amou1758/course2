@@ -21,13 +21,7 @@
             float: right;
         }
 
-        .hide {
-            display: none;
-        }
 
-        .show {
-            display: inline;
-        }
 
     </style>
 </head>
@@ -55,7 +49,10 @@
         <span><button class="btn-danger btn" onclick="Del()">删除选中课程 <i class="fa fa-trash"
                                                                        aria-hidden="true"></i></button></span>
 
+
     </div>
+
+
     <div>
         <table class="table table-bordered table-condensed sort-table">
             <thead>
@@ -107,8 +104,12 @@
                             <td>课程已关闭</td>
                         {% endif %}
                         <td>{{ c.course_choosed_student }} / {{ c.course_total_people }}</td>
-                        <td><a href="" onclick="detail(this)"><i class="fa fa-th" aria-hidden="true"
-                                                                 title="查看详情"></i></a></td>
+                        <td>
+                            <button class="btn btn-default btn-sm " onclick="detail(this)">详情 <i class="fa fa-th"
+                                                                                                 aria-hidden="true"
+                                                                                                 title="查看详情"></i>
+                            </button>
+                        </td>
                     </tr>
                 {% endfor %}
             {% else %}
@@ -160,13 +161,29 @@
 
     function Del() {
         var arr = new Array();
+        var s = ''
         $("input[name='course']:checked").each(function () {
-            arr.push($(this).parent().parent().attr("cno"))
+            var cno = $(this).parent().parent().attr("cno")
+            arr.push(cno);
+            s = s + ' ' + cno;
         });
 
-        if (arr == '') {
-            alert("没有选择任何课程！");
+        if ($.isEmptyObject(arr)) {
+            alert("没有选择任何课程！！！")
         } else {
+            window.parent.$('#courseDel').modal('show');
+            window.parent.$('#courseDel p').eq(0).html("要删除课程" + s + "吗？")
+        }
+    }
+
+    function excuteDel() {
+        window.parent.$("#courseDel").modal('hide');
+        var arr = new Array();
+        $("input[name='course']:checked").each(function () {
+            var cno = $(this).parent().parent().attr("cno")
+            arr.push(cno);
+        });
+
             $.ajax({
                 url: 'm_del',
                 type: 'POST',
@@ -174,73 +191,16 @@
                 data: {"cno": arr},
                 success: function (arg) {
                     if (arg.status == true) {
-                        alert("删除成功！");
                         window.location.reload();
                     } else {
                         alert("删除失败！请重新尝试");
                     }
                 }
             })
-        }
+
     }
 
 
-    {#function offline() {#}
-    {#    var arr = new Array();#}
-    {#    $("input[name='course']:checked").each(function () {#}
-    {#        arr.push($(this).parent().parent().attr("cno"))#}
-    {#    });#}
-    {#    if (arr == '') {#}
-    {#        alert("没有选择任何课程！");#}
-    {#    } else {#}
-    {#        $.ajax({#}
-    {#            url: 'm_offline',#}
-    {#            type: 'POST',#}
-    {#            dataType: "JSON",#}
-    {#            data: {"cno": arr},#}
-    {#            success: function (arg) {#}
-    {##}
-    {#                if (arg.status==true) {#}
-    {#                    alert("下线成功！");#}
-    {#                    window.location.reload();#}
-    {#                } else {#}
-    {#                    alert(arg.msg);#}
-    {#                }#}
-    {#            }#}
-    {#        })#}
-    {#    }#}
-    {#}#}
-        {##}
-        {##}
-        {##}
-        {#function online() {#}
-        {##}
-        {#    var arr = new Array();#}
-        {#    $("input[name='course']:checked").each(function () {#}
-        {#        arr.push($(this).parent().parent().attr("cno"))#}
-        {#    });#}
-        {##}
-        {#    if (arr == '') {#}
-        {#        alert("没有选择任何课程！");#}
-        {#    } else {#}
-        {#        $.ajax({#}
-        {#            url: 'm_online',#}
-        {#            type: 'POST',#}
-        {#            dataType: "JSON",#}
-        {#            data: {"cno": arr},#}
-        {#            success: function (arg) {#}
-        {##}
-        {#                if (arg.status==true) {#}
-        {#                    alert("上线成功！");#}
-        {#                    window.location.reload();#}
-        {#                } else {#}
-        {#                    alert("上线失败！请重新尝试");#}
-        {#                }#}
-        {#            }#}
-        {#        })#}
-        {#    }#}
-        {
-    #}#}
 </script>
 
 </body>

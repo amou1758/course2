@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <style>
+        .input-group {
+            padding-top: 10px;
+            padding-bottom: 20px;
+            width: 300px;
+        }
+
+        .title-r {
+            margin-top: -50px;
+            padding-bottom: 10px;
+            float: right;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            {{ fm.content }}
+            <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索<i class="fa fa-search fa-lg"
+                                                           aria-hidden="true"></i></button>
+      </span>
+        </div>
+    </form>
+    <div class="title-r">
+        <span><button class="btn-default btn" onclick="Add()">新建条目 <i
+                class="fa fa-plus-square" aria-hidden="true"></i></button></span>
+        <span><button class="btn-primary btn" onclick="pathchAdd()">批量创建 <i class="fa fa-file-text"
+                                                                            aria-hidden="true"></i></button></span>
+
+
+    </div>
+
+
+    <div>
+        <table class="table table-bordered table-condensed sort-table">
+            <thead>
+
+            <tr>
+                <td><input type="checkbox" onclick="SelectAll()" id="select">
+                    <small>全选</small>
+                </td>
+                <th>姓名</th>
+                <th>工号</th>
+                <th>性别</th>
+                <th>学院</th>
+                <th>职位</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if teachers %}
+                {% for t in teachers %}
+                    <tr class="first-tr" no="{{ t.username }}">
+                        <td><input type="checkbox" name="course"></td>
+                        <td><b>{{ t.name }}</b></td>
+                        <td><b>{{ t.username }}</b></td>
+                        <td>
+                            {{ t.get_gender_display }}
+                        </td>
+                        <td>{{ t.get_college_display }}</td>
+                        <td>{{ t.get_place_display }}</td>
+                        <td>{{ t.telephone }}</td>
+                        <td>{{ t.email }}</td>
+                        <td>
+                            <button class="btn btn-default btn-sm" onclick="teacherDetail(this);">详情 <i
+                                    class="fa fa-align-justify" aria-hidden="true"></i></button>
+                            <button class="btn btn-default btn-sm" onclick="edit(this);">编辑 <i
+                                    class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                            <button onclick="resetPwd(this)" class="btn btn-warning btn-sm">重置密码 <i class="fa fa-undo"
+                                                                                                    aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="9"><h1 style="color: silver;text-align: center">没有搜索到┭┮﹏┭┮</h1></td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        {% include 'include/paginatior.html' %}
+    </div>
+</div>
+
+
+<script>
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+    $(document).ready(function () {
+        $(".sort-table").tablesorter();
+    });
+
+    function pathchAdd() {
+        window.parent.$("#patchTea").modal("show");
+    }
+
+    function edit(t) {
+        window.parent.$('#editTeacher').modal('show');
+        var tno = $(t).parent().parent().attr('tno');
+        $.ajax({
+            url: 'editTeacher',
+            dataType: 'JSON',
+            type: 'GET',
+            data: {"tno": tno},
+            success: function (arg) {
+                window.parent.$("#editTeacher #id_name").attr("value", arg[1])
+                window.parent.$("#editTeacher #id_no").attr("value", arg[2])
+
+                var gender = window.parent.$("#editTeacher #id_gender option")
+                for (var i = 0; i < gender.length; i++) {
+                    {#console.log(gender.eq(i).attr("value"))#}
+                    if (gender.eq(i).attr("value") == arg[3]) {
+                        gender.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                window.parent.$("#editTeacher #id_card_id").attr("value", arg[4])
+
+                var college = window.parent.$("#editTeacher #id_college_id option")
+                for (var i = 0; i < college.length; i++) {
+                    if (college.eq(i).attr("value") == arg[5]) {
+                        college.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                var position = window.parent.$("#editTeacher #id_position_id option")
+                for (var i = 0; i < position.length; i++) {
+                    if (position.eq(i).attr("value") == arg[6]) {
+                        position.eq(i).attr("selected", true)
+                    }
+                }
+
+                window.parent.$("#editTeacher #id_email").attr("value", arg[7])
+                window.parent.$("#editTeacher #id_tel").attr("value", arg[8])
+            }
+        })
+
+    }
+
+
+    function resetPwd(t) {
+        var no = $(t).parent().parent().attr("no")
+        $.ajax({
+            url: 'resetPassword',
+            type: 'POST',
+            dataType: "JSON",
+            data: {"no": no},
+            success: function (arg) {
+                if (arg.status) {
+                    alert("密码重置成功！")
+                } else {
+                    alert("密码重置失败，请重新尝试！")
+                }
+            }
+        })
+    }
+
+
+    function teacherDetail(t) {
+        window.parent.$('#teacherDetail').modal('show');
+        var no = $(t).parent().parent().attr('no');
+        $.ajax({
+            url: 'm_teacher_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"no": no},
+            success: function (arg) {
+                window.parent.$("#teacherDetail").find("input").each(function (i) {
+                    window.parent.$(this).val(arg[i]);
+
+                })
+            }
+
+        })
+    }
+
+    function Add() {
+        window.parent.$('#addTeacher').modal('show');
+    }
+
+    function SelectAll() {
+        v = $("#select").prop("checked");
+        if (v == true) {
+            $(":checkbox").prop("checked", true);
+        } else {
+            $(":checkbox").prop("checked", false);
+        }
+
+    }
+
+    function edit(t) {
+
+        window.parent.$('#editTeacher').modal('show');
+        var no = $(t).parent().parent().attr('no');
+        $.ajax({
+            url: 'm_edit_teacher',
+            dataType: 'JSON',
+            type: 'GET',
+            data: {"no": no},
+            success: function (arg) {
+                window.parent.$("#editTeacher #id_name").attr("value", arg[0])
+                window.parent.$("#editTeacher #id_username").attr("value", arg[1])
+                window.parent.$("#editTeacher #id_username").attr("readonly", true)
+
+                var gender = window.parent.$("#editTeacher #id_gender option")
+                for (var i = 0; i < gender.length; i++) {
+                    gender.eq(i).attr("selected", false)
+                    if (gender.eq(i).attr("value") == arg[2]) {
+                        gender.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                var college = window.parent.$("#editTeacher #id_college option")
+                for (var i = 0; i < college.length; i++) {
+                    college.eq(i).attr("selected", false)
+                    if (college.eq(i).attr("value") == arg[3]) {
+                        college.eq(i).attr("selected", true)
+                    }
+                }
+
+                var place = window.parent.$("#editTeacher #id_place option")
+                for (var i = 0; i < place.length; i++) {
+                    place.eq(i).attr("selected", false)
+                    if (place.eq(i).attr("value") == arg[4]) {
+                        place.eq(i).attr("selected", true)
+                    }
+                }
+
+                var province = window.parent.$("#editTeacher #id_province option")
+                for (var i = 0; i < province.length; i++) {
+                    province.eq(i).attr("selected", false)
+                    if (province.eq(i).attr("value") == arg[5]) {
+                        province.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                window.parent.$("#editTeacher #id_card_id").attr("value", arg[6])
+
+                var nation = window.parent.$("#editTeacher #id_nation option")
+                for (var i = 0; i < province.length; i++) {
+                    nation.eq(i).attr("selected", false)
+                    if (nation.eq(i).attr("value") == arg[7]) {
+                        nation.eq(i).attr("selected", true)
+                    }
+                }
+
+                window.parent.$("#editTeacher #id_email").attr("value", arg[8])
+                window.parent.$("#editTeacher #id_telephone").attr("value", arg[9])
+                window.parent.$("#editTeacher #id_qq").attr("value", arg[10])
+                window.parent.$("#editTeacher #username_").attr("value", arg[1])
+
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

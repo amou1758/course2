@@ -186,7 +186,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -213,6 +212,652 @@
         </div>
     </div>
 
+    <div class="modal fade" id="courseDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+
+                <h4>确定要删除所选课程吗？</h4>
+                <p></p>
+                <p>
+                    <button type="button" class="btn btn-danger" onclick="delCourse()">删除&nbsp;<i class="fa fa-trash-o"
+                                                                                                  aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="cancelCourse()">取消&nbsp;<i
+                            class="fa fa-times fa-lg" aria-hidden="true"></i></button>
+                </p>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="newsDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+
+                <h4>确定要删除所选通知吗？</h4>
+                <p></p>
+                <p>
+                    <button type="button" class="btn btn-danger" onclick="delNews()">删除&nbsp;<i class="fa fa-trash-o"
+                                                                                                aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="cancelNews()">取消&nbsp;<i
+                            class="fa fa-times fa-lg" aria-hidden="true"></i></button>
+                </p>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="teacherDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+
+                        <p>
+                            <span>姓名</span>
+                            <input class="form-control" type="text" disabled name="name">
+                        </p>
+
+                        <p>
+                            <span>工号</span>
+                            <input class="form-control" type="text" disabled name="username">
+                        </p>
+
+                        <p>
+                            <span>性别</span>
+                            <input class="form-control" type="text" disabled name="gender">
+                        </p>
+
+                        <p>
+                            <span>所属学院</span>
+                            <input class="form-control" type="text" disabled name="college">
+                        </p>
+
+                        <p>
+                            <span>职位</span>
+                            <input class="form-control" type="text" disabled name="place">
+                        </p>
+                        <p>
+                            <span>籍贯</span>
+                            <input class="form-control" type="text" disabled name="prov">
+                        </p>
+                        <p>
+                            <span>身份证号</span>
+                            <input class="form-control" type="text" disabled name="card">
+                        </p>
+                        <p>
+                            <span>民族</span>
+                            <input class="form-control" type="text" disabled name="nation">
+                        </p>
+
+                        <p>
+                            <span>电子邮箱</span>
+                            <input class="form-control" type="text" disabled name="email">
+                        </p>
+                        <p>
+                            <span>电话</span>
+                            <input class="form-control" type="text" disabled name="telephone">
+
+                        </p>
+                        <p>
+                            <span>生日</span>
+                            <input class="form-control" type="text" disabled name="birth">
+
+                        </p>
+                        <p>
+                            <span>QQ</span>
+                            <input class="form-control" type="text" disabled name="QQ">
+
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="studentDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">学生详情</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+
+                        <p>
+                            <span>姓名</span>
+                            <input class="form-control" type="text" disabled name="name">
+                        </p>
+
+                        <p>
+                            <span>学号</span>
+                            <input class="form-control" type="text" disabled name="username">
+                        </p>
+
+                        <p>
+                            <span>性别</span>
+                            <input class="form-control" type="text" disabled name="gender">
+                        </p>
+
+                        <p>
+                            <span>所属学院</span>
+                            <input class="form-control" type="text" disabled name="college">
+                        </p>
+
+                        <p>
+                            <span>年纪</span>
+                            <input class="form-control" type="text" disabled name="grade">
+                        </p>
+                        <p>
+                            <span>籍贯</span>
+                            <input class="form-control" type="text" disabled name="prov">
+                        </p>
+                        <p>
+                            <span>身份证号</span>
+                            <input class="form-control" type="text" disabled name="card">
+                        </p>
+                        <p>
+                            <span>民族</span>
+                            <input class="form-control" type="text" disabled name="nation">
+                        </p>
+
+                        <p>
+                            <span>电子邮箱</span>
+                            <input class="form-control" type="text" disabled name="email">
+                        </p>
+                        <p>
+                            <span>电话</span>
+                            <input class="form-control" type="text" disabled name="telephone">
+
+                        </p>
+                        <p>
+                            <span>生日</span>
+                            <input class="form-control" type="text" disabled name="birth">
+
+                        </p>
+                        <p>
+                            <span>QQ</span>
+                            <input class="form-control" type="text" disabled name="QQ">
+
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">修改教师资料</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="editTeacher" method="post" id="edit-fm">
+                        <div class="form-group">
+
+                            {% csrf_token %}
+                            <p>
+                                <span>姓名</span>
+                                {{ tfm.name }}
+                            <p>
+                                <small id="err_name"></small>
+                            </p>
+                            </p>
+
+                            <p>
+
+                                <span>工号</span>
+                                {{ tfm.username }}
+                            <p>
+                                <small id="err_username"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ tfm.gender }}
+                            <p>
+                                <small id="err_gender"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>所属学院</span>
+                                {{ tfm.college }}
+                            <p>
+                                <small id="err_college"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>职位</span>
+                                {{ tfm.place }}
+                            <p>
+                                <small id="err_place"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>籍贯</span>
+                                {{ tfm.province }}
+                            <p>
+                                <small id="err_province"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>身份证号</span>
+                                {{ tfm.card_id }}
+                            <p>
+                                <small id="err_card_id"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>民族</span>
+                                {{ tfm.nation }}
+                            <p>
+                                <small id="err_nation"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>电子邮箱</span>
+                                {{ tfm.email }}
+                            <p>
+                                <small id="err_email"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>电话</span>
+                                {{ tfm.telephone }}
+                            <p>
+                                <small id="err_telephone"></small>
+                            </p>
+
+                            </p>
+
+                            <p>
+                                <span>QQ</span>
+                                {{ tfm.qq }}
+                            <p>
+                                <small id="err_qq"></small>
+                            </p>
+                            </p>
+
+
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <small><b id="err_msg2" style="float: left"></b></small>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="editT()">确定</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">修改学生资料</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="edit-sfm">
+                        <div class="form-group">
+
+                            {% csrf_token %}
+                            <p>
+                                <span>姓名</span>
+                                {{ sfm.name }}
+                            <p>
+                                <small id="err_name2"></small>
+                            </p>
+                            </p>
+
+                            <p>
+
+                                <span>工号</span>
+                                {{ sfm.username }}
+                            <p>
+                                <small id="err_username2"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ sfm.gender }}
+                            <p>
+                                <small id="err_gender2"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>所属学院</span>
+                                {{ sfm.college }}
+                            <p>
+                                <small id="err_college2"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>年级</span>
+                                {{ sfm.grade }}
+                            <p>
+                                <small id="err_grade2"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>籍贯</span>
+                                {{ sfm.province }}
+                            <p>
+                                <small id="err_province2"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>身份证号</span>
+                                {{ sfm.card_id }}
+                            <p>
+                                <small id="err_card_id2"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>民族</span>
+                                {{ sfm.nation }}
+                            <p>
+                                <small id="err_nation2"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>电子邮箱</span>
+                                {{ sfm.email }}
+                            <p>
+                                <small id="err_email2"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>电话</span>
+                                {{ sfm.telephone }}
+                            <p>
+                                <small id="err_telephone2"></small>
+                            </p>
+
+                            </p>
+
+                            <p>
+                                <span>QQ</span>
+                                {{ sfm.qq }}
+                            <p>
+                                <small id="err_qq2"></small>
+                            </p>
+                            </p>
+
+
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <small><b id="err_msg2" style="float: left"></b></small>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="editS()">确定</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">修改学生资料</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="add-sfm">
+                        <div class="form-group">
+
+                            {% csrf_token %}
+                            <p>
+                                <span>姓名</span>
+                                {{ sfm.name }}
+                            <p>
+                                <small id="err_name3"></small>
+                            </p>
+                            </p>
+
+                            <p>
+
+                                <span>工号</span>
+                                {{ sfm.username }}
+                            <p>
+                                <small id="err_username3"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ sfm.gender }}
+                            <p>
+                                <small id="err_gender3"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>所属学院</span>
+                                {{ sfm.college }}
+                            <p>
+                                <small id="err_college3"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>年级</span>
+                                {{ sfm.grade }}
+                            <p>
+                                <small id="err_grade3"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>籍贯</span>
+                                {{ sfm.province }}
+                            <p>
+                                <small id="err_province3"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>身份证号</span>
+                                {{ sfm.card_id }}
+                            <p>
+                                <small id="err_card_id3"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>民族</span>
+                                {{ sfm.nation }}
+                            <p>
+                                <small id="err_nation3"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>电子邮箱</span>
+                                {{ sfm.email }}
+                            <p>
+                                <small id="err_email3"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>电话</span>
+                                {{ sfm.telephone }}
+                            <p>
+                                <small id="err_telephone3"></small>
+                            </p>
+
+                            </p>
+
+                            <p>
+                                <span>QQ</span>
+                                {{ sfm.qq }}
+                            <p>
+                                <small id="err_qq3"></small>
+                            </p>
+                            </p>
+
+
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <small><b id="err_msg2" style="float: left"></b></small>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="addS()">确定</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">新增教师</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="add-fm">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <p>
+                                <span>姓名</span>
+                                {{ tfm.name }}
+                            <p>
+                                <small id="err_name"></small>
+                            </p>
+                            </p>
+
+                            <p>
+
+
+                                <span>工号</span>
+                                {{ tfm.username }}
+                            <p>
+                                <small id="err_username"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ tfm.gender }}
+                            <p>
+                                <small id="err_gender"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>所属学院</span>
+                                {{ tfm.college }}
+                            <p>
+                                <small id="err_college"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>职位</span>
+                                {{ tfm.place }}
+                            <p>
+                                <small id="err_place"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>籍贯</span>
+                                {{ tfm.province }}
+                            <p>
+                                <small id="err_province"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>身份证号</span>
+                                {{ tfm.card_id }}
+                            <p>
+                                <small id="err_card_id"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>民族</span>
+                                {{ tfm.nation }}
+                            <p>
+                                <small id="err_nation"></small>
+                            </p>
+                            </p>
+
+                            <p>
+                                <span>电子邮箱</span>
+                                {{ tfm.email }}
+                            <p>
+                                <small id="err_email"></small>
+                            </p>
+                            </p>
+                            <p>
+                                <span>电话</span>
+                                {{ tfm.telephone }}
+                            <p>
+                                <small id="err_telephone"></small>
+                            </p>
+
+                            </p>
+
+                            <p>
+                                <span>QQ</span>
+                                {{ tfm.qq }}
+                            <p>
+                                <small id="err_qq"></small>
+                            </p>
+                            </p>
+
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <small><b id="err_msg2" style="float: left"></b></small>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="addT()">确定</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <script>
         $("#nav5").addClass("active");
@@ -224,73 +869,102 @@
         var i = $(".tno-setting input").attr("readonly", true);
         var j = $(".sno-setting input").attr("readonly", true);
 
+        function delCourse() {
+            // 进入子iframe中的方法
+            $("iframe")[0].contentWindow.excuteDel();
+        }
+
+        function cancelCourse() {
+            $("#courseDel").modal("hide");
+        }
+
+        function delNews() {
+            // 进入子iframe中的方法
+            $("iframe")[0].contentWindow.excuteDel();
+        }
+
+        function cancelNews() {
+            $("#newsDel").modal("hide");
+        }
+
+
 
         function editT() {
-
-            $("#err_msg2").html("");
-            $("#errName2").html("");
-            $("#errNo2").html("");
-            $("#errGender2").html("");
-            $("#errCardId2").html("");
-            $("#errCollege2").html("");
-            $("#errPos2").html("");
-            $("#errEmail2").html("");
-            $("#errTel2").html("");
-
+            $("#err_name").html("")
+            $("#err_username").html("")
+            $("#err_gender").html("")
+            $("#err_college").html("")
+            $("#err_place").html("")
+            $("#err_province").html("")
+            $("#err_card_id").html("")
+            $("#err_nation").html("")
+            $("#err_email").html("")
+            $("#err_telephone").html("")
+            $("#err_qq").html("")
             $.ajax({
-                url: "#",
+                url: "/m_edit_teacher",
                 type: "POST",
                 dataType: "json",
                 data: $("#edit-fm").serialize(),
                 success: function (arg) {
-                    if (arg.status == true) {
+                    if (arg.status) {
                         $("#editTeacher").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
                     } else {
-                        console.log("failed");
-                        console.log(arg.msg.tel);
-                        $("#err_msg2").html(arg.msg).css("color", "red");
-                        $("#errName2").html(arg.msg.name).css("color", "red");
-                        $("#errGender2").html(arg.msg.gender).css("color", "red");
-                        $("#errCardId2").html(arg.msg.card_id).css("color", "red");
-                        $("#errCollege2").html(arg.msg.college_id).css("color", "red");
-                        $("#errPos2").html(arg.msg.position_id).css("color", "red");
-                        $("#errEmail2").html(arg.msg.email).css("color", "red");
-                        $("#errTel2").html(arg.msg.tel).css("color", "red");
+
+
+                        $("#err_name").html(arg.msg.name).css("color", "red");
+                        $("#err_username").html(arg.msg.username).css("color", "red");
+                        $("#err_gender").html(arg.msg.gender).css("color", "red");
+                        $("#err_college").html(arg.msg.college).css("color", "red");
+                        $("#err_place").html(arg.msg.place).css("color", "red");
+                        $("#err_province").html(arg.msg.province).css("color", "red");
+                        $("#err_card_id").html(arg.msg.card_id).css("color", "red");
+                        $("#err_nation").html(arg.msg.nation).css("color", "red");
+                        $("#err_email").html(arg.msg.email).css("color", "red");
+                        $("#err_telephone").html(arg.msg.telephone).css("color", "red");
+                        $("#err_qq").html(arg.msg.qq).css("color", "red");
+
                     }
                 }
             })
         }
 
+
         function editS() {
-            $("#err_msg3").html("");
-            $("#errName3").html("");
-            $("#errNo3").html("");
-            $("#errGender3").html("");
-            $("#errCardId3").html("");
-            $("#errCollege3").html("");
-            $("#errPos3").html("");
-            $("#errEmail3").html("");
-            $("#errTel3").html("");
+            $("#err_name2").html("")
+            $("#err_username2").html("")
+            $("#err_gender2").html("")
+            $("#err_college2").html("")
+            $("#err_grade2").html("")
+            $("#err_province2").html("")
+            $("#err_card_id2").html("")
+            $("#err_nation2").html("")
+            $("#err_email2").html("")
+            $("#err_telephone2").html("")
+            $("#err_qq2").html("")
             $.ajax({
-                url: "#",
+                url: "/m_edit_student",
                 type: "POST",
                 dataType: "json",
-                data: $("#edit-fm2").serialize(),
+                data: $("#edit-sfm").serialize(),
                 success: function (arg) {
-                    if (arg.status == true) {
-                        $("#editStudent").modal("hide");
+                    if (arg.status) {
+                        $("#editTeacher").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
                     } else {
-                        console.log("failed");
-                        $("#err_msg3").html(arg.msg).css("color", "red");
-                        $("#errName3").html(arg.msg.name).css("color", "red");
-                        $("#errGender3").html(arg.msg.gender).css("color", "red");
-                        $("#errCardId3").html(arg.msg.card_id).css("color", "red");
-                        $("#errCollege3").html(arg.msg.college_id).css("color", "red");
-                        $("#errGrade3").html(arg.msg.grade_id).css("color", "red");
-                        $("#errEmail3").html(arg.msg.email).css("color", "red");
-                        $("#errTel3").html(arg.msg.tel).css("color", "red");
+
+                        $("#err_name2").html(arg.msg.name).css("color", "red");
+                        $("#err_username2").html(arg.msg.username).css("color", "red");
+                        $("#err_gender2").html(arg.msg.gender).css("color", "red");
+                        $("#err_college2").html(arg.msg.college).css("color", "red");
+                        $("#err_grade2").html(arg.msg.grade).css("color", "red");
+                        $("#err_province2").html(arg.msg.province).css("color", "red");
+                        $("#err_card_id2").html(arg.msg.card_id).css("color", "red");
+                        $("#err_nation2").html(arg.msg.nation).css("color", "red");
+                        $("#err_email2").html(arg.msg.email).css("color", "red");
+                        $("#err_telephone2").html(arg.msg.telephone).css("color", "red");
+                        $("#err_qq2").html(arg.msg.qq).css("color", "red");
 
                     }
                 }
@@ -335,35 +1009,44 @@
         }
 
         function addT() {
-            $("#err_msg").html("");
-            $("#errName").html("");
-            $("#errNo").html("");
-            $("#errGender").html("");
-            $("#errCardId").html("");
-            $("#errCollege").html("");
-            $("#errPos").html("");
-            $("#errEmail").html("");
-            $("#errTel").html("");
+            $("#err_name").html("")
+            $("#err_username").html("")
+            $("#err_gender").html("")
+            $("#err_college").html("")
+            $("#err_place").html("")
+            $("#err_province").html("")
+            $("#err_card_id").html("")
+            $("#err_nation").html("")
+            $("#err_email").html("")
+            $("#err_telephone").html("")
+            $("#err_qq").html("")
             $.ajax({
-                url: '#',
+                url: '/m_add_teacher',
                 type: "POST",
                 dataType: "JSON",
-                data: $("#fm").serialize(),
+                data: $("#add-fm").serialize(),
                 success: function (arg) {
-                    if (arg.status == true) {
+                    if (arg.status) {
                         $("#addTeacher").modal("hide");
-                        $('iframe').attr('src', $('iframe').attr('src'));
+                        // 子页面刷新
+                        window.location.reload()
+
+                        {#$('iframe').attr('src', $('iframe').attr('src'));#}
+
+
                     } else {
                         console.log("失败");
-                        $("#err_msg").html(arg.msg).css("color", "red");
-                        $("#errName").html(arg.msg.name).css("color", "red");
-                        $("#errNo").html(arg.msg.no).css("color", "red");
-                        $("#errGender").css("color", "red").html(arg.msg.gender).css("color", "red");
-                        $("#errCardId").html(arg.msg.card_id).css("color", "red");
-                        $("#errCollege").html(arg.msg.college_id).css("color", "red");
-                        $("#errPos").html(arg.msg.position_id).css("color", "red");
-                        $("#errEmail").html(arg.msg.email).css("color", "red");
-                        $("#errTel").html(arg.msg.tel).css("color", "red");
+                        $("#err_name").html(arg.msg.name).css("color", "red");
+                        $("#err_username").html(arg.msg.username).css("color", "red");
+                        $("#err_gender").html(arg.msg.gender).css("color", "red");
+                        $("#err_college").html(arg.msg.college).css("color", "red");
+                        $("#err_place").html(arg.msg.place).css("color", "red");
+                        $("#err_province").html(arg.msg.province).css("color", "red");
+                        $("#err_card_id").html(arg.msg.card_id).css("color", "red");
+                        $("#err_nation").html(arg.msg.nation).css("color", "red");
+                        $("#err_email").html(arg.msg.email).css("color", "red");
+                        $("#err_telephone").html(arg.msg.telephone).css("color", "red");
+                        $("#err_qq").html(arg.msg.qq).css("color", "red");
                     }
                 }
             })
@@ -371,38 +1054,43 @@
 
 
         function addS() {
-            $("#err_msg4").html("");
-            $("#errName4").html("");
-            $("#errNo4").html("");
-            $("#errGender4").html("");
-            $("#errCardId4").html("");
-            $("#errCollege4").html("");
-            $("#errGrade4").html("");
-            $("#errEmail4").html("");
-            $("#errTel4").html("");
+            $("#err_name2").html("")
+            $("#err_username3").html("")
+            $("#err_gender3").html("")
+            $("#err_college3").html("")
+            $("#err_grade3").html("")
+            $("#err_province3").html("")
+            $("#err_card_id3").html("")
+            $("#err_nation3").html("")
+            $("#err_email3").html("")
+            $("#err_telephone3").html("")
+            $("#err_qq3").html("")
             $.ajax({
-                url: '#',
+                url: "/m_add_student",
                 type: "POST",
-                dataType: "JSON",
-                data: $("#fm2").serialize(),
+                dataType: "json",
+                data: $("#add-sfm").serialize(),
                 success: function (arg) {
-                    if (arg.status == true) {
+                    if (arg.status) {
                         $("#addStudent").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
                     } else {
-                        console.log("失败");
-                        $("#err_msg4").html(arg.msg).css("color", "red");
-                        $("#errName4").html(arg.msg.name).css("color", "red");
-                        $("#errNo4").html(arg.msg.no).css("color", "red");
-                        $("#errGender4").css("color", "red").html(arg.msg.gender).css("color", "red");
-                        $("#errCardId4").html(arg.msg.card_id).css("color", "red");
-                        $("#errCollege4").html(arg.msg.college_id).css("color", "red");
-                        $("#errGrade4").html(arg.msg.grade_id).css("color", "red");
-                        $("#errEmail4").html(arg.msg.email).css("color", "red");
-                        $("#errTel4").html(arg.msg.tel).css("color", "red");
+                        console.log(arg.msg)
+
+                        $("#err_name3").html(arg.msg.name).css("color", "red");
+                        $("#err_username3").html(arg.msg.username).css("color", "red");
+                        $("#err_gender3").html(arg.msg.gender).css("color", "red");
+                        $("#err_college3").html(arg.msg.college).css("color", "red");
+                        $("#err_grade3").html(arg.msg.grade).css("color", "red");
+                        $("#err_province3").html(arg.msg.province).css("color", "red");
+                        $("#err_card_id3").html(arg.msg.card_id).css("color", "red");
+                        $("#err_nation3").html(arg.msg.nation).css("color", "red");
+                        $("#err_email3").html(arg.msg.email).css("color", "red");
+                        $("#err_telephone3").html(arg.msg.telephone).css("color", "red");
+                        $("#err_qq3").html(arg.msg.qq).css("color", "red");
+
                     }
                 }
-
             })
         }
 

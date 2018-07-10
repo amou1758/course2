@@ -101,17 +101,17 @@ class Course(models.Model):
     course_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='apply_courses', null=True,
                                        blank=True)
     course_applied_time = models.DateTimeField(null=True)
-    course_week = models.IntegerField(choices=weeks, default=None)
-    course_time = models.IntegerField(choices=times, default=None)
-    course_classroom = models.IntegerField(choices=classrooms, default=None)
+    course_week = models.IntegerField(choices=weeks, null=True)
+    course_time = models.IntegerField(choices=times, null=True)
+    course_classroom = models.IntegerField(choices=classrooms, null=True)
     course_total_people = models.IntegerField(default=0)
-    course_type = models.IntegerField(choices=[(1, '专业课'), (2, '公选课')], default=None)
+    course_type = models.IntegerField(choices=[(1, '专业课'), (2, '公选课')], null=True)
     # 课程关闭时间, 默认是审批 上线后 3天后 自动关闭选课并下线
     course_close_time = models.DateTimeField(null=True, blank=True)
     course_choosed_student = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = ('course_teacher', 'course_week', 'course_time')
+        unique_together = ('course_week', 'course_time')
 
     def __str__(self):
         return self.course_name

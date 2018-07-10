@@ -21,6 +21,7 @@ from course import views
 from course2 import settings
 from news import views as news_views
 from manageCourse import views as m_views
+from account import views as a_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,6 +48,16 @@ urlpatterns = [
                   path('m_news_detail', news_views.m_news_detail),
                   path('m_news_del', m_views.m_news_del),
 
+                  path('m_teacher', m_views.m_teacher),
+                  path('m_teacher_detail', m_views.m_teacher_detail),
+                  path('m_student', m_views.m_student),
+                  path('m_student_detail', m_views.m_student_detail),
+                  path('m_edit_teacher', m_views.m_edit_teacher),
+                  path('m_edit_student', m_views.m_edit_student),
+                  path('m_add_teacher', m_views.m_add_teacher),
+                  path('m_add_student', m_views.m_add_student),
+                  path('m_del_student', m_views.m_del_student),
+
 
                   path('t/index.html', views.t_index),
                   path('t/apply.html', views.t_apply),
@@ -63,6 +74,12 @@ urlpatterns = [
                   path('s/search', views.s_search_course),
                   path('s/quit', views.s_quit),
                   path('s/table.html', views.s_table),
+
+                  path('login.html', a_views.login_),
+                  path("change_password.html", a_views.change_pwd, name="change_pwd"),
+                  path("logout.html", a_views.logout_, name="logout_"),
+
+                  path('resetPassword', a_views.reset_password),
 
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

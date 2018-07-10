@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 
 # Create your models here.
@@ -47,7 +48,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=32, db_index=True, null=True)
     is_first_login = models.BooleanField(default=True)
     gender = models.CharField(choices=[('M', '男'), ('F', '女')], max_length=1, default='M', blank=True)
-    role = models.IntegerField(choices=[(1, '学生'), (2, '教师'), (3, '教务')], null=True, blank=True)
+    role = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group')
     place = models.IntegerField(
         choices=[(1, '助教'), (2, '讲师'), (3, '高级讲师'), (4, '副教授'), (5, '教授'), (6, '高级教授'), (7, '特聘教授'), (8, '客座教授')],
         null=True, blank=True)
@@ -58,13 +59,14 @@ class User(AbstractUser):
     province = models.IntegerField(choices=provinces, default=1)
     email = models.EmailField()
     telephone = models.CharField(max_length=11, null=True)
-    avatar = models.ImageField(upload_to='user_avatar', null=True, default=None)
+    avatar = models.ImageField(upload_to='user_avatar', null=True, blank=True, default=None)
     birthday = models.DateField()
     ctime = models.DateTimeField(auto_now_add=True)
-    qq = models.CharField(max_length=10, null=True)
+    QQ = models.CharField(max_length=10, null=True)
 
     USERNAME_FIELD = 'username'
 
 
     def __str__(self):
         return self.name
+

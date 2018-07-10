@@ -74,14 +74,16 @@
             <tbody>
             {% if news %}
                 {% for n in news %}
-                    <tr class="first-tr" nid="{{ n.id }}">
-                        <td><input type="checkbox" name="course"></td>
+                    <tr class="first-tr" nid="{{ n.id }}"
+                        ntitle="{{ n.title|slice:"5" }}"
+                    >
+                        <td><input type="checkbox" name="news"></td>
                         <td><b>{{ n.title|slice:"10" }}</b></td>
                         <td>{{ n.content|striptags|slice:":20" }}<b>...</b></td>
                         <td>{{ n.ctime }}</td>
                         <td>{{ n.created_by }}</td>
                         <td style="width: 25%">
-                            <button class="btn btn-primary btn-sm" onclick="newsDetail(this);">详情 &nbsp;<i
+                            <button class="btn btn-default btn-sm" onclick="newsDetail(this);">详情 &nbsp;<i
                                     class="fa fa-align-justify" aria-hidden="true"></i></button>
                             <a href="{% url 'mod_news' n.id %}" target="_parent">
                                 <button class="btn btn-default btn-sm">编辑 &nbsp;<i class="fa fa-pencil-square-o"
@@ -94,7 +96,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="5"><h1 style="color: silver;text-align: center">未搜索到相关新闻</h1></td>
+                    <td colspan="6"><h1 style="color: silver;text-align: center">未到找相关新闻</h1></td>
                 </tr>
             {% endif %}
             </tbody>
@@ -153,7 +155,7 @@
 
     function DelOne(t) {
         var nid = $(t).parent().parent().attr("nid");
-        console.log(nid)
+
         $.ajax({
             url: 'm_news_del',
             type: 'POST',
@@ -161,7 +163,6 @@
             data: {"nid[]": nid},
             success: function (arg) {
                 if (arg.status == true) {
-                    alert("删除成功！");
                     window.location.reload();
                 } else {
                     alert("删除失败！请重新尝试");
@@ -172,12 +173,32 @@
 
     function Del() {
         var arr = new Array();
-        $("input[name='course']:checked").each(function () {
-            arr.push($(this).parent().parent().attr("nid"))
+        var s = ''
+        $("input[name='news']:checked").each(function () {
+            var nid = $(this).parent().parent().attr("nid")
+            arr.push(nid);
+            var title = $(this).parent().parent().attr("ntitle")
+            s = s + title + "...,";
         });
 
+        if ($.isEmptyObject(arr)) {
+            alert("没有选择任何通知！！！")
+        } else {
+            window.parent.$('#newsDel').modal('show');
+            window.parent.$('#newsDel p').eq(0).html("要删除通知" + s + "吗？")
+        }
+
+    }
+
+    function excuteDel() {
+        window.parent.$("#newsDel").modal("hide");
+        var arr = new Array();
+        $("input[name='news']:checked").each(function () {
+            var nid = $(this).parent().parent().attr("nid")
+            arr.push(nid);
+        });
         if (arr == '') {
-            alert("没有选择任何课程！");
+            alert("没有选择任何通知!!!");
         } else {
             $.ajax({
                 url: 'm_news_del',
@@ -186,7 +207,6 @@
                 data: {"nid": arr},
                 success: function (arg) {
                     if (arg.status == true) {
-                        alert("删除成功！");
                         window.location.reload();
                     } else {
                         alert("删除失败！请重新尝试");

@@ -1,11 +1,12 @@
 import datetime
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from course.form import PubForm, AppForm, ExtendForm, CourseSearchForm
+from course.form import PubForm, AppForm, ExtendForm, CourseSearchForm, AddTeacher, AddStudent
 from course2.ulities import MyPagination
 from news.models import News
 from .models import Course, StudentCourse
@@ -13,9 +14,9 @@ from .models import Course, StudentCourse
 
 # Create your views here.
 
-
+@login_required
 def e_index(request):
-    app_list = Course.objects.filter(course_status=1, course_visable=True).order_by('course_applied_time')
+    app_list = Course.objects.filter(course_status=1).order_by('course_applied_time')
     app_counts = app_list.count()
     news = News.objects.all()
     return render(request, 'e_index.html', locals())
@@ -30,6 +31,7 @@ def pub_course(request):
     if request.method == "GET":
         courses = Course.objects.all().order_by('-course_ctime')
         pub_form = PubForm()
+
         obj = MyPagination(courses.count(), request.GET.get('p'), 15, url='pubCourse.html')
         courses = courses[obj.start():obj.end()]
         return render(request, "e_pubCourse.html", {"pub_form": pub_form, "courses": courses, "obj": obj})
@@ -92,7 +94,9 @@ def no_pass(request):
 
 
 def m_manage_center(request):
-    return render(request, "e_manage_center.html")
+    tfm = AddTeacher()
+    sfm = AddStudent()
+    return render(request, "e_manage_center.html", locals())
 
 
 def t_index(request):

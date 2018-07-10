@@ -118,13 +118,22 @@
                 <div id="info">
                     <div class="dropdown">
                     <span id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img width="40px" height="40px" src="/media/{{ user.avatar }}">
+                    {% if user.avatar %}
+                        <img width="40px" height="40px" src="/media/{{ user.avatar }}" alt="/static/image/man.png">
+                    {% else %}
+
+                        {% if user.gender == 'M' %}
+                            <img width="40px" height="40px" src="/static/image/man.png">
+                        {% else %}
+                            <img width="40px" height="40px" src="/static/image/women.png">
+                        {% endif %}
+                    {% endif %}
                     <i class="fa fa-caret-down fa-lg" aria-hidden="true"></i></span>
                         <ul class="dropdown-menu" aria-labelledby="dLabel">
                             <li><a href="#">个人中心</a></li>
                             <li><a href="#">更改密码</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">注销</a></li>
+                            <li><a href="{% url "logout_" %}">注销</a></li>
                         </ul>
                     </div>
                 </div>
@@ -175,7 +184,6 @@
         displayTime();
         greet();
     })
-
     function displayTime() {
         var t = new Date();
         var now = t.toLocaleString();

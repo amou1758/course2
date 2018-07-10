@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <style>
+        .input-group {
+            padding-top: 10px;
+            padding-bottom: 20px;
+            width: 300px;
+        }
+
+        .title-r {
+            margin-top: -50px;
+            padding-bottom: 10px;
+            float: right;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            {{ fm.content }}
+            <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索</button>
+      </span>
+        </div>
+    </form>
+    <div class="title-r">
+        <span><button class="btn-default btn" onclick="Add()">新建条目 <i
+                class="fa fa-plus-square" aria-hidden="true"></i></button></span>
+        <span><button class="btn-primary btn" onclick="pathchAdd()">批量创建 <i class="fa fa-file-text"
+                                                                            aria-hidden="true"></i></button></span>
+        <span><button class="btn-danger btn" onclick="Del()">删除选中条目 <i class="fa fa-trash"
+                                                                       aria-hidden="true"></i></button></span>
+
+    </div>
+
+
+    <div>
+        <table class="table table-bordered table-condensed sort-table">
+            <thead>
+
+            <tr>
+                <td><input type="checkbox" onclick="SelectAll()" id="select">
+                    <small>全选</small>
+                </td>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>学院</th>
+                <th>年级</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if students %}
+                {% for s in students %}
+                    <tr class="first-tr" no="{{ s.username }}">
+                        <td><input type="checkbox" name="student"></td>
+                        <td><b>{{ s.username }}</b></td>
+                        <td><b>{{ s.name }}</b></td>
+                        <td>{{ s.get_gender_display }}</td>
+                        <td>{{ s.get_college_display }}</td>
+                        <td>{{ s.grade.name }}</td>
+                        <td>{{ s.telephone }}</td>
+                        <td>{{ s.email }}</td>
+                        <td>
+                            <button class="btn btn-default btn-sm" onclick="studentDetail(this);">详情 <i
+                                    class="fa fa-align-justify" aria-hidden="true"></i></button>
+                            <button class="btn btn-default btn-sm" onclick="edit(this);">编辑 <i
+                                    class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                            {#                        <button onclick="delOne(this)" class="btn btn-danger btn-sm" >删除</button>#}
+                            <button onclick="resetPwd(this)" class="btn btn-warning btn-sm">重置密码 <i class="fa fa-undo"
+                                                                                                    aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="9"><h1 style="color: silver;text-align: center">没有搜索到┭┮﹏┭┮</h1></td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        {% include 'include/paginatior.html' %}
+    </div>
+</div>
+
+
+<script>
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+    $(document).ready(function () {
+        $(".sort-table").tablesorter();
+    });
+
+    function pathchAdd() {
+        window.parent.$("#patchStu").modal("show");
+    }
+
+    // 修改个人资料
+    function edit(t) {
+
+        window.parent.$('#editStudent').modal('show');
+        var no = $(t).parent().parent().attr('no');
+        $.ajax({
+            url: 'm_edit_student',
+            dataType: 'JSON',
+            type: 'GET',
+            data: {"no": no},
+            success: function (arg) {
+                console.log(arg)
+                window.parent.$("#editStudent #id_name").attr("value", arg[0])
+                window.parent.$("#editStudent #id_username").attr("value", arg[1])
+                window.parent.$("#editStudent #id_username").attr("readonly", true)
+
+                var gender = window.parent.$("#editStudent #id_gender option")
+                for (var i = 0; i < gender.length; i++) {
+                    gender.eq(i).attr("selected", false)
+                    if (gender.eq(i).attr("value") == arg[2]) {
+                        gender.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                var college = window.parent.$("#editStudent #id_college option")
+                for (var i = 0; i < college.length; i++) {
+                    college.eq(i).attr("selected", false)
+                    if (college.eq(i).attr("value") == arg[3]) {
+                        college.eq(i).attr("selected", true)
+                    }
+                }
+
+                var grade = window.parent.$("#editStudent #id_grade option")
+                for (var i = 0; i < grade.length; i++) {
+                    grade.eq(i).attr("selected", false)
+                    if (grade.eq(i).attr("value") == arg[4]) {
+                        grade.eq(i).attr("selected", true)
+                    }
+                }
+
+                var province = window.parent.$("#editStudent #id_province option")
+                for (var i = 0; i < province.length; i++) {
+                    province.eq(i).attr("selected", false)
+                    if (province.eq(i).attr("value") == arg[5]) {
+                        province.eq(i).attr("selected", true)
+                    }
+                }
+
+
+                window.parent.$("#editStudent #id_card_id").attr("value", arg[6])
+
+                var nation = window.parent.$("#editTeacher #id_nation option")
+                for (var i = 0; i < province.length; i++) {
+                    nation.eq(i).attr("selected", false)
+                    if (nation.eq(i).attr("value") == arg[7]) {
+                        nation.eq(i).attr("selected", true)
+                    }
+                }
+
+                window.parent.$("#editStudent #id_email").attr("value", arg[8])
+                window.parent.$("#editStudent #id_telephone").attr("value", arg[9])
+                window.parent.$("#editStudent #id_qq").attr("value", arg[10])
+
+            }
+        })
+
+    }
+
+    function resetPwd(t) {
+        var no = $(t).parent().parent().attr("no")
+        $.ajax({
+            url: 'resetPassword',
+            type: 'POST',
+            dataType: "JSON",
+            data: {"no": no},
+            success: function (arg) {
+                if (arg.status) {
+                    alert("密码重置成功！")
+                } else {
+                    alert("密码重置失败，请重新尝试！")
+                }
+            }
+        })
+    }
+
+    function Del() {
+
+        var arr = new Array();
+        $("input[name='student']:checked").each(function () {
+            arr.push($(this).parent().parent().attr("no"))
+        });
+
+        if (arr == '') {
+            alert("没有选择任何条目！");
+        } else {
+            $.ajax({
+                url: 'm_del_student',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"no": arr},
+                success: function (arg) {
+                    if (arg.status == true) {
+                        alert("删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败！请重新尝试");
+                    }
+                }
+            })
+        }
+    }
+
+
+    function Add() {
+        window.parent.$('#addStudent').modal('show');
+    }
+
+
+    function studentDetail(t) {
+        window.parent.$('#studentDetail').modal('show');
+        var no = $(t).parent().parent().attr('no');
+        $.ajax({
+            url: 'm_student_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"no": no},
+            success: function (arg) {
+                window.parent.$("#studentDetail").find("input").each(function (i) {
+                    window.parent.$(this).val(arg[i]);
+
+                })
+            }
+
+        })
+    }
+
+    function SelectAll() {
+        v = $("#select").prop("checked");
+        if (v == true) {
+            $(":checkbox").prop("checked", true);
+        } else {
+            $(":checkbox").prop("checked", false);
+        }
+    }
+</script>
+</body>
+</html>
