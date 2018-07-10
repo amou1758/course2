@@ -111,20 +111,31 @@
     <div class="bk2">
         <div class="head-nav">
             <div class="container">
-                {% block eduName %}
-                {% endblock %}
                 <p>{{ user.name }}
                     <text id="greet"></text>
                 <div id="info">
                     <div class="dropdown">
                     <span id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img width="40px" height="40px" src="/media/{{ user.avatar }}">
+                    {% if user.avatar %}
+                        <img width="40px" height="40px" src="/media/{{ user.avatar }}">
+
+                    {% else %}
+                        {% if user.gender == 'M' %}
+                            <img width="40px" height="40px" src="/static/image/man.png">
+                        {% else %}
+                            <img width="40px" height="40px" src="/static/image/women.png">
+                        {% endif %}
+                    {% endif %}
                     <span class="caret"></span></span>
                         <ul class="dropdown-menu" aria-labelledby="dLabel">
-                            <li><a href="#">个人中心</a></li>
-                            <li><a href="#">更改密码</a></li>
+                            <li><a href="/t/index.html"><i class="fa fa-indent" aria-hidden="true"></i> 首页</a></li>
+                            <li><a href="/t_information.html"><i class="fa fa-user" aria-hidden="true"></i> 个人中心</a>
+                            </li>
+                            <li><a href="/change_password.html"><i class="fa fa-key" aria-hidden="true"></i> 更改密码</a>
+                            </li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="{% url "logout_" %}">注销</a></li>
+                            <li><a href="{% url "logout_" %}"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

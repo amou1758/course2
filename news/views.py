@@ -1,15 +1,19 @@
 import datetime
 import json
 
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
 from account.models import User
+from course2.ulities import check_role_edu
 from news.form import NewsForm
 from news.models import News
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def new_news(request):
     n = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if request.method == "GET":
@@ -52,6 +56,8 @@ def m_news_detail(request):
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def mod_news(request, nid):
     if request.method == "GET":
         news = News.objects.get(id=nid)

@@ -75,10 +75,15 @@ urlpatterns = [
                   path('s/quit', views.s_quit),
                   path('s/table.html', views.s_table),
 
+                  path('s_information.html', a_views.s_information),
+                  path('t_information.html', a_views.t_information),
+                  path('e_information.html', a_views.e_information),
+                  path('edit_information', a_views.edit_information),
+                  path('change_avatar', a_views.change_avatar),
+
                   path('login.html', a_views.login_),
                   path("change_password.html", a_views.change_pwd, name="change_pwd"),
                   path("logout.html", a_views.logout_, name="logout_"),
-
                   path('resetPassword', a_views.reset_password),
 
 

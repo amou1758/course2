@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息
+    </title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .bk {
+            min-height: 100%;
+        }
+
+        .bk2 {
+            padding-bottom: 100px;
+        }
+
+        .head-nav {
+            height: 100px;
+            width: 100%;
+            background-color: rgb(43, 90, 190);
+
+        }
+
+        .head-nav p {
+            color: white;
+            font-size: 40px;
+            margin: 40px;
+            display: block;
+        }
+
+        #nav-li li {
+            font-size: 20px;
+            font-family: "Microsoft Sans Serif";
+        }
+
+        .footer-title {
+            height: 100px;
+            margin-top: -100px;
+            width: 100%;
+            background-color: rgb(77, 77, 77);
+            position: relative;
+        }
+
+        .footer-title ul {
+            padding-top: 18px;
+            padding-bottom: 3px;
+            text-align: center;
+        }
+
+        .footer-title ul li {
+            display: inline;
+            padding-right: 20px;
+            color: white;
+            list-style: none;
+            font-size: 20px;
+        }
+
+        .footer-title ul li a {
+            display: inline;
+            text-decoration-line: none;
+            color: white;
+            text-align: center;
+        }
+
+        .footer-title p {
+            text-align: center;
+            font-size: 12px;
+            color: rgb(218, 220, 225);
+        }
+
+        .footer-title p a {
+            text-decoration-line: none;
+            color: #5bc0de;
+        }
+
+        #nav-li a {
+            float: right;
+            padding: 5px 10px;
+        }
+
+        #info {
+            float: right;
+            margin-top: -80px;
+        }
+
+        img {
+            border-radius: 5px;
+        }
+
+        tbody th {
+            width: 50%;
+        }
+
+        caption {
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .table-content {
+            position: relative;
+            padding: 20px 150px;
+
+        }
+
+        .bot {
+            position: relative;
+            padding: 10px 200px;
+            margin: 0 100px;
+        }
+
+        tbody form {
+            position: relative;
+            float: right;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<div class="bk">
+    <div class="bk2">
+        <div class="head-nav">
+            <div class="container">
+                <p>{{ user.name }}
+                    <text id="greet"></text>
+                <div id="info">
+                    <div class="dropdown">
+                    <span id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if user.avatar %}
+                            <img width="40px" height="40px" src="media/{{ user.avatar }}" alt="/static/image/women.png">
+
+                        {% else %}
+                            {% if user.gender == 'M' %}
+                                <img width="40px" height="40px" src="/static/image/man.png">
+                            {% else %}
+                                <img width="40px" height="40px" src="/static/image/women.png">
+                            {% endif %}
+                        {% endif %}
+
+
+                        <span class="caret"></span></span>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            {% block index %}{% endblock %}
+                            <li><a href="/change_password.html"><i class="fa fa-key" aria-hidden="true"></i> 更改密码 </a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{% url "logout_" %}"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                </p>
+
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="content">
+                <div class="table-content">
+                    <table class="table table-hover table-bordered" align="center">
+                        <caption align="top">个人信息</caption>
+                        <tbody>
+                        <tr>
+                            <th>姓名</th>
+                            <td>{{ user.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>头像</th>
+                            <td>
+                                {% if user.avatar %}
+                                    <img width="40px" height="40px" src="media/{{ user.avatar }}"
+                                         alt="/static/image/women.png">
+
+                                {% else %}
+                                    {% if user.gender == 'M' %}
+                                        <img width="40px" height="40px" src="/static/image/man.png">
+                                    {% else %}
+                                        <img width="40px" height="40px" src="/static/image/women.png">
+                                    {% endif %}
+                                {% endif %}
+                                <form action="change_avatar" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" id="chooseImage" name="avatar" accept=".jpg,.jpeg,.png">
+                                    <button type="submit" class="btn btn-default btn-sm"><i
+                                            class="fa fa-cloud-upload fa-lg" aria-hidden="true"></i></button>
+                                </form>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>性别</th>
+                            <td>{{ user.get_gender_display }}</td>
+
+                        </tr>
+                        <tr>
+                            <th>身份证号</th>
+                            <td>{{ user.card_id }}</td>
+                        </tr>
+
+
+                        {% block table %}
+                        {% endblock %}
+                        <tr>
+                            <th>学院</th>
+                            <td>{{ user.get_college_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>籍贯</th>
+                            <td>{{ user.get_province_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>电子邮箱</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>电话号码</th>
+                            <td>{{ user.telephone }}</td>
+                        </tr>
+                        <tr>
+                            <th>QQ</th>
+                            <td>{{ user.QQ }}</td>
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                    <div class="bot">
+                        <a href="{% url "change_pwd" %}">
+                            <button class="btn btn-primary">更改密码 <i class="fa fa-key" aria-hidden="true"></i></button>
+                        </a>
+                        <button class="btn btn-primary" onclick="edit()">编辑资料 <i class="fa fa-pencil-square-o"
+                                                                                 aria-hidden="true"></i></button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">修改个人资料</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form action="editStudent" method="post" id="edit-fm">
+                            <div class="form-group">
+
+                                {% csrf_token %}
+                                <p>
+                                    <span>姓名</span>
+                                    <input type="text" class="form-control" value="{{ user.name }}" readonly>
+                                    <br>
+                                    <small id="errName3"></small>
+                                </p>
+
+
+
+                                {% block edit-fm %}
+                                {% endblock %}
+                                <span>性别</span>
+
+                                <input type="text" class="form-control" value="{{ user.get_gender_display }}" readonly>
+                                <br>
+                                <small id="errGender3"></small>
+                                </p>
+
+                                <p>
+                                    <span>身份证号</span>
+                                    <input type="text" class="form-control" value="{{ user.card_id }}" readonly>
+
+                                    <br>
+                                    <small id="errCardId3"></small>
+                                </p>
+                                <p>
+                                    <span>所属学院</span>
+                                    <input type="text" class="form-control" value="{{ user.get_college_display }}"
+                                           readonly>
+                                    <br>
+                                    <small id="errCollege3"></small>
+                                </p>
+
+
+                                <p>
+                                    <span>电子邮箱</span>
+                                    <input name="email" type="text" class="form-control" value="{{ user.email }}">
+
+                                    <br>
+                                    <small id="errEmail3"></small>
+                                </p>
+                                <p>
+                                    <span>电话</span>
+                                    <input name="telephone" type="text" class="form-control"
+                                           value="{{ user.telephone }}">
+
+                                    <br>
+                                    <small id="errTel3"></small>
+                                </p>
+                                <p>
+                                    <span>QQ</span>
+                                    <input name="qq" type="text" class="form-control" value="{{ user.QQ }}">
+
+                                    <br>
+                                    <small id="errQQ3"></small>
+                                </p>
+
+
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <small><b id="err_msg3" style="float: left"></b></small>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="editInfo()">确定</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="footer-title">
+    <div class="container">
+        <ul class="ul-footer">
+            <li>
+                <a href="https://github.com/wolflikai/course_system">github源码</a>
+            </li>
+            <li>
+                <a href="#">关于作者</a>
+            </li>
+            <li>
+                <a href="#">更多</a>
+            </li>
+        </ul>
+        <p>课程管理系统By<a href="#">@Kay</a>提供技术支持</p>
+
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        displayTime();
+        greet();
+    })
+
+    function displayTime() {
+        var t = new Date();
+        var now = t.toLocaleString();
+        $("#bjtime").html(now);
+        setTimeout(displayTime, 1000)
+    }
+
+    function greet() {
+        var t = new Date();
+        var h = t.getHours();
+        if (h > 6 && h <= 12) {
+            $("#greet").html("早上好， 欢迎来到个人中心");
+        } else if (h > 12 && h <= 18) {
+            $("#greet").html("下午好， 欢迎来到个人中心");
+        } else {
+            $("#greet").html("晚上好， 欢迎来到个人中心");
+        }
+        setTimeout(greet, 1000 * 60 * 60)
+    }
+
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+    });
+
+    function edit() {
+        $("#editStudent").modal("show");
+
+    }
+
+    function editInfo() {
+        $.ajax({
+            url: '/edit_information',
+            dataType: 'JSON',
+            type: "POST",
+            data: $("#edit-fm").serialize(),
+            success: function (arg) {
+                if (arg.status) {
+                    {#alert("修改成功!")#}
+                    window.location.reload()
+                }
+                else {
+                    $("#errEmail3").html(arg.msg.email).css("color", "red")
+                    $("#errTel3").html(arg.msg.telephone).css("color", "red")
+                    $("#errQQ3").html(arg.msg.qq).css("color", "red")
+                }
+
+            }
+        })
+
+    }
+
+</script>
+</body>
+</html>

@@ -25,7 +25,11 @@ class ChangePwdForm(forms.Form):
     old_password = fields.CharField(
         widget=widgets.TextInput(attrs={"type": "password", "class": "form-control", "placeholder": "在这里输入旧密码"}),
         label="旧密码",
-        help_text="初始密码为身份证后6位"
+        help_text="初始密码为身份证后6位",
+        required=True,
+        error_messages={
+            'required': '该字段必须要输入'
+        }
     )
 
     password1 = fields.CharField(
@@ -50,3 +54,4 @@ class ChangePwdForm(forms.Form):
             'invalid': '输入密码不符合要求'
         }
     )
+

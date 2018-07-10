@@ -1,8 +1,9 @@
 import json
 
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from course2.ulities import check_role_edu
 # Create your views here.
 from account.models import User, Grade
 from course.form import CourseSearchForm, NewsSearchForm, PeopleSearchForm, AddTeacher, AddStudent
@@ -11,6 +12,8 @@ from course2.ulities import MyPagination
 from news.models import News
 
 
+@user_passes_test(check_role_edu)
+@login_required
 def m_course(request):
     if request.method == "GET":
         courses = Course.objects.all()
@@ -35,6 +38,8 @@ def m_course(request):
             return HttpResponse("输入不符合要求，请重新输入")
 
 
+@user_passes_test(check_role_edu)
+@login_required
 def m_course_detail(request):
     cno = request.GET.get("cno")
     data = []
@@ -110,7 +115,8 @@ def m_course_detail(request):
 #             ret["status"] = False
 #             ret["msg"] = "上线失败"
 #             return HttpResponse(json.dumps(ret, ensure_ascii=False))
-
+@login_required
+@user_passes_test(check_role_edu)
 def m_course_del(request):
     if request.method == "POST":
         ret = {"status": True, "msg": "删除成功！"}
@@ -120,6 +126,8 @@ def m_course_del(request):
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_news(request):
     if request.method == "GET":
         fm = CourseSearchForm()
@@ -139,6 +147,8 @@ def m_news(request):
             return HttpResponse("输入不符合要求，请重新输入")
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_news_del(request):
     if request.method == "POST":
         ret = {"status": True, "msg": "删除成功！"}
@@ -148,6 +158,8 @@ def m_news_del(request):
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_teacher(request):
     if request.method == "GET":
         fm = PeopleSearchForm()
@@ -170,6 +182,8 @@ def m_teacher(request):
             return HttpResponse("输入不符合要求，请重新输入")
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_teacher_detail(request):
     no = request.GET.get("no")
     data = []
@@ -184,6 +198,8 @@ def m_teacher_detail(request):
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_edit_teacher(request):
     if request.method == "GET":
         no = request.GET.get("no")
@@ -236,6 +252,8 @@ def m_edit_teacher(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_add_teacher(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
@@ -280,6 +298,8 @@ def m_add_teacher(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_student(request):
     if request.method == "GET":
         fm = PeopleSearchForm()
@@ -302,6 +322,8 @@ def m_student(request):
             return HttpResponse("输入不符合要求，请重新输入")
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_student_detail(request):
     no = request.GET.get("no")
     data = []
@@ -314,6 +336,8 @@ def m_student_detail(request):
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_edit_student(request):
     if request.method == "GET":
         no = request.GET.get("no")
@@ -365,6 +389,8 @@ def m_edit_student(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_add_student(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
@@ -410,6 +436,8 @@ def m_add_student(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_del_student(request):
     if request.method == "POST":
         ret = {"status": True, "msg": "删除成功"}

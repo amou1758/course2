@@ -1,0 +1,38 @@
+{% extends 'infor_base.html' %}
+
+{% block index %}
+    <li><a href="/t/index.html"><i class="fa fa-indent" aria-hidden="true"></i> 首页</a></li>
+    <li><a href="t_information.html"><i class="fa fa-user" aria-hidden="true"></i> 个人中心</a></li>
+
+{% endblock %}
+
+
+{% block table %}
+    <tr>
+        <th>工号</th>
+        <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+        <th>职位</th>
+        <td>{{ user.get_place_display }}</td>
+    </tr>
+{% endblock %}
+{% block edit-fm %}
+    <p class="sno-setting">
+        <span>工号</span>
+        <input name="no" type="text" class="form-control" value="{{ user.username }}" readonly>
+
+        <br>
+        <small id="errNo3"></small>
+    </p>
+
+    <p>
+
+    <p>
+        <span>职位</span>
+        <input type="text" class="form-control" value="{{ user.get_place_display }}" readonly>
+
+        <br>
+        <small id="errPos3"></small>
+    </p>
+{% endblock %}

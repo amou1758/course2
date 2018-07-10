@@ -1,6 +1,19 @@
 from account.models import User
 
 
+# 检查权限分类
+
+def check_role_edu(user):
+    return (True if user.role_id == 1 else False)
+
+
+def check_role_t(user):
+    return (True if user.role_id == 2 else False)
+
+
+def check_role_s(user):
+    return (True if user.role_id == 3 else False)
+
 class MyPagination(object):
     def __init__(self, totalCount, currentPage, perPageItemNum=30, maxPageNum=10, url=None):
         # 总条目数

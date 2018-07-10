@@ -1,7 +1,8 @@
 import json
-
+import re
+from course2.ulities import check_role_edu, check_role_s, check_role_t
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -46,47 +47,6 @@ def login_(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
-def change_pwd(request):
-    if request.method == "GET":
-        obj = ChangePwdForm()
-        return render(request, "change_password.html", {"obj": obj})
-    if request.method == "POST":
-        ret = {"status": None, "msg": None}
-        obj = ChangePwdForm(request.POST)
-        if obj.is_valid():
-            old_password = obj.cleaned_data.get("old_password")
-            password1 = obj.cleaned_data.get("password1")
-            password2 = obj.cleaned_data.get("password2")
-            user = authenticate(username=request.user, password=old_password)
-            if user is None:
-                ret["status"] = "old_failed"
-                ret["msg"] = "旧密码输入错误，请重新输入"
-                return HttpResponse(json.dumps(ret, ensure_ascii=False))
-
-            else:
-                if password1 == old_password:
-                    ret["status"] = "not_ok"
-                    ret["msg"] = "新密码不与旧密码相同"
-                else:
-                    if password1 == password2:
-                        ret["status"] = "success"
-                        # 这种改法 直接明文写入数据库 不对 也不好
-                        # User.objects.filter(username=request.user).update(password=password1)
-                        user.set_password(password1)
-                        user.save()
-                        PwdStatus.objects.filter(user__username=user).update(pwd_status=True)
-
-                        return HttpResponse(json.dumps(ret, ensure_ascii=False))
-                    else:
-                        ret["status"] = "diff_failed"
-                        ret["msg"] = "两次密码输入不一致，请重新输入"
-                        return HttpResponse(json.dumps(ret, ensure_ascii=False))
-
-        else:
-            ret["status"] = "form_failed"
-            ret["msg"] = obj.errors
-            return HttpResponse(json.dumps(ret, ensure_ascii=False))
-
 
 @login_required
 def logout_(request):
@@ -94,6 +54,7 @@ def logout_(request):
     return redirect("login.html")
 
 
+@user_passes_test(check_role_edu)
 @login_required
 def reset_password(request):
     if request.method == "POST":
@@ -110,3 +71,108 @@ def reset_password(request):
             print(str(e))
             ret["status"] = False
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+@login_required
+@user_passes_test(check_role_s)
+def s_information(request):
+    return render(request, "s_info.html")
+
+
+@login_required
+@user_passes_test(check_role_t)
+def t_information(request):
+    return render(request, "t_info.html")
+
+
+@login_required
+@user_passes_test(check_role_edu)
+def e_information(request):
+    return render(request, "e_info.html")
+
+
+@login_required
+def edit_information(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        telephone = request.POST.get("telephone")
+        qq = request.POST.get("qq")
+        print(email, telephone, qq)
+        error_dic = {}
+        ret = {"status": True, "msg": error_dic}
+        if email:
+            if re.match(r'^\w+?@\w+?\.\w+?$', email):
+                request.user.email = email
+                request.user.save()
+            else:
+                ret["status"] = False
+                error_dic.update({"email": "输入格式错误"})
+        if telephone:
+            if re.match(r'^\d{11}$', telephone):
+                request.user.email = email
+                request.user.save()
+            else:
+                ret["status"] = False
+                error_dic.update({"telephone": "输入格式错误"})
+        if qq:
+            if re.match(r'^\d{6,10}$', qq):
+                request.user.QQ = qq
+                request.user.save()
+            else:
+                ret["status"] = False
+                error_dic.update({"qq": "输出格式错误"})
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+@login_required
+def change_pwd(request):
+    if request.method == "GET":
+        obj = ChangePwdForm()
+        return render(request, "change_password.html", {"obj": obj})
+    if request.method == "POST":
+        ret = {"status": None, "msg": None}
+        obj = ChangePwdForm(request.POST)
+        if obj.is_valid():
+            old_password = obj.cleaned_data.get("old_password")
+            password1 = obj.cleaned_data.get("password1")
+            password2 = obj.cleaned_data.get("password2")
+            user = authenticate(request, username=request.user.username, password=old_password)
+            if not user:
+                ret["status"] = "old_failed"
+                ret["msg"] = "旧密码输入错误，请重新输入"
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+            else:
+                if password1 == old_password:
+                    ret["status"] = "not_ok"
+                    ret["msg"] = "新密码不能与旧密码相同"
+                else:
+                    if password1 == password2:
+                        ret["status"] = "success"
+                        user.set_password(password1)
+                        user.is_first_login = False
+                        user.save()
+                        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+                    else:
+                        ret["status"] = "diff_failed"
+                        ret["msg"] = "两次密码输入不一致，请重新输入"
+                        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+        else:
+            ret["status"] = "form_failed"
+            ret["msg"] = obj.errors
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+@login_required
+def change_avatar(request):
+    if request.method == "POST":
+        avatar = request.FILES.get("avatar")
+        request.user.avatar = avatar
+        request.user.save()
+        if request.user.role_id == 1:
+            return redirect('e_information.html')
+        if request.user.role_id == 2:
+            return redirect('t_information.html')
+        if request.user.role_id == 3:
+            return redirect('s_information.html')

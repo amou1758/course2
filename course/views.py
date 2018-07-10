@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -10,11 +10,11 @@ from course.form import PubForm, AppForm, ExtendForm, CourseSearchForm, AddTeach
 from course2.ulities import MyPagination
 from news.models import News
 from .models import Course, StudentCourse
-
+from course2.ulities import check_role_t, check_role_s, check_role_edu
 
 # Create your views here.
-
 @login_required
+@user_passes_test(check_role_edu)
 def e_index(request):
     app_list = Course.objects.filter(course_status=1).order_by('course_applied_time')
     app_counts = app_list.count()
@@ -22,11 +22,15 @@ def e_index(request):
     return render(request, 'e_index.html', locals())
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def e_news(request):
     news_list = News.objects.all().order_by("-ctime")
     return render(request, "e_news.html", {"news_list": news_list})
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def pub_course(request):
     if request.method == "GET":
         courses = Course.objects.all().order_by('-course_ctime')
@@ -63,11 +67,15 @@ def pub_course(request):
             return HttpResponse(json.dumps(ret))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def e_aprrove(request):
     app_list = Course.objects.filter(course_status=1)
     return render(request, "e_approve.html", {"app_list": app_list})
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def pass_(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
@@ -81,6 +89,8 @@ def pass_(request):
         return HttpResponse(json.dumps(ret))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def no_pass(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
@@ -93,12 +103,16 @@ def no_pass(request):
         return HttpResponse(json.dumps(ret))
 
 
+@login_required
+@user_passes_test(check_role_edu)
 def m_manage_center(request):
     tfm = AddTeacher()
     sfm = AddStudent()
     return render(request, "e_manage_center.html", locals())
 
 
+@login_required
+@user_passes_test(check_role_t)
 def t_index(request):
     today_ = datetime.datetime.now().weekday() + 1
     today_courses = Course.objects.filter(course_choosed_student__gte=1, course_teacher=request.user,
@@ -106,6 +120,9 @@ def t_index(request):
     news = News.objects.filter(Q(watcher=1) | Q(watcher=2)).order_by("-mtime")
     return render(request, "t_index.html", {"today_course": today_courses, "news": news})
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_apply(request):
     if request.method == "GET":
         obj = AppForm()
@@ -146,11 +163,17 @@ def t_apply(request):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_applied(request):
     applied_course_list = Course.objects.filter(course_teacher=request.user).order_by("-course_applied_time")
     extend_obj = ExtendForm()
     return render(request, "t_applied.html", {"applied_course_list": applied_course_list, "obj": extend_obj})
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_online(request):
     if request.method == "POST":
         ret = {"status": True}
@@ -165,6 +188,9 @@ def t_online(request):
         )
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_offline(request):
     if request.method == "POST":
         n = datetime.datetime.now()
@@ -177,6 +203,9 @@ def t_offline(request):
         )
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_extend(request):
     if request.method == "POST":
         obj = ExtendForm(request.POST)
@@ -199,20 +228,22 @@ def t_extend(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_t)
 def t_student_list(request):
     pass
 
+
+@login_required
+@user_passes_test(check_role_t)
 def t_table(request):
     courses = Course.objects.filter(course_teacher=request.user, course_choosed_student__gte=1)
     weeks = [i for i in range(1, 6)]
     return render(request, "t_table.html", {"courses": courses, "weeks": weeks})
 
 
-
-
-
-
-
+@login_required
+@user_passes_test(check_role_s)
 def s_index(request):
     today_ = datetime.datetime.now().weekday() + 1
     today_courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True,
@@ -223,6 +254,8 @@ def s_index(request):
     return render(request, "s_index.html", {"obj": obj, "today_course": today_courses, "news": news})
 
 
+@login_required
+@user_passes_test(check_role_s)
 def s_course_pool(request):
     if request.method == "GET":
         fm = CourseSearchForm()
@@ -251,6 +284,8 @@ def s_course_pool(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_s)
 def s_search_course(request):
     if request.method == "POST":
         fm = CourseSearchForm(request.POST)
@@ -278,6 +313,8 @@ def s_search_course(request):
             return HttpResponse("输入不符合要求，请重新输入")
 
 
+@login_required
+@user_passes_test(check_role_s)
 def s_selected(request):
     selected_courses = Course.objects.filter(studentcourse__student=request.user,
                                              studentcourse__is_choosed=True
@@ -288,6 +325,8 @@ def s_selected(request):
     return render(request, "s_selected.html", {"obj": obj, "selected_courses": selected_courses})
 
 
+@login_required
+@user_passes_test(check_role_s)
 def s_quit(request):
     if request.method == "POST":
         ret = {"status": True}
@@ -299,6 +338,8 @@ def s_quit(request):
         return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
+@login_required
+@user_passes_test(check_role_s)
 def s_table(request):
     courses = Course.objects.filter(studentcourse__student=request.user, studentcourse__is_choosed=True)
     weeks = [i for i in range(1, 6)]
