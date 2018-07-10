@@ -761,7 +761,7 @@
                                 <span>姓名</span>
                                 {{ tfm.name }}
                             <p>
-                                <small id="err_name"></small>
+                                <small id="err_name0"></small>
                             </p>
                             </p>
 
@@ -771,7 +771,7 @@
                                 <span>工号</span>
                                 {{ tfm.username }}
                             <p>
-                                <small id="err_username"></small>
+                                <small id="err_username0"></small>
                             </p>
                             </p>
 
@@ -779,7 +779,7 @@
                                 <span>性别</span>
                                 {{ tfm.gender }}
                             <p>
-                                <small id="err_gender"></small>
+                                <small id="err_gender0"></small>
                             </p>
                             </p>
 
@@ -787,7 +787,7 @@
                                 <span>所属学院</span>
                                 {{ tfm.college }}
                             <p>
-                                <small id="err_college"></small>
+                                <small id="err_college0"></small>
                             </p>
                             </p>
 
@@ -795,28 +795,28 @@
                                 <span>职位</span>
                                 {{ tfm.place }}
                             <p>
-                                <small id="err_place"></small>
+                                <small id="err_place0"></small>
                             </p>
                             </p>
                             <p>
                                 <span>籍贯</span>
                                 {{ tfm.province }}
                             <p>
-                                <small id="err_province"></small>
+                                <small id="err_province0"></small>
                             </p>
                             </p>
                             <p>
                                 <span>身份证号</span>
                                 {{ tfm.card_id }}
                             <p>
-                                <small id="err_card_id"></small>
+                                <small id="err_card_id0"></small>
                             </p>
                             </p>
                             <p>
                                 <span>民族</span>
                                 {{ tfm.nation }}
                             <p>
-                                <small id="err_nation"></small>
+                                <small id="err_nation0"></small>
                             </p>
                             </p>
 
@@ -824,14 +824,14 @@
                                 <span>电子邮箱</span>
                                 {{ tfm.email }}
                             <p>
-                                <small id="err_email"></small>
+                                <small id="err_email0"></small>
                             </p>
                             </p>
                             <p>
                                 <span>电话</span>
                                 {{ tfm.telephone }}
                             <p>
-                                <small id="err_telephone"></small>
+                                <small id="err_telephone0"></small>
                             </p>
 
                             </p>
@@ -840,7 +840,7 @@
                                 <span>QQ</span>
                                 {{ tfm.qq }}
                             <p>
-                                <small id="err_qq"></small>
+                                <small id="err_qq0"></small>
                             </p>
                             </p>
 
@@ -1009,17 +1009,17 @@
         }
 
         function addT() {
-            $("#err_name").html("")
-            $("#err_username").html("")
-            $("#err_gender").html("")
-            $("#err_college").html("")
-            $("#err_place").html("")
-            $("#err_province").html("")
-            $("#err_card_id").html("")
-            $("#err_nation").html("")
-            $("#err_email").html("")
-            $("#err_telephone").html("")
-            $("#err_qq").html("")
+            $("#err_name0").html("")
+            $("#err_username0").html("")
+            $("#err_gender0").html("")
+            $("#err_college0").html("")
+            $("#err_place0").html("")
+            $("#err_province0").html("")
+            $("#err_card_id0").html("")
+            $("#err_nation0").html("")
+            $("#err_email0").html("")
+            $("#err_telephone0").html("")
+            $("#err_qq0").html("")
             $.ajax({
                 url: '/m_add_teacher',
                 type: "POST",
@@ -1036,17 +1036,18 @@
 
                     } else {
                         console.log("失败");
-                        $("#err_name").html(arg.msg.name).css("color", "red");
-                        $("#err_username").html(arg.msg.username).css("color", "red");
-                        $("#err_gender").html(arg.msg.gender).css("color", "red");
-                        $("#err_college").html(arg.msg.college).css("color", "red");
-                        $("#err_place").html(arg.msg.place).css("color", "red");
-                        $("#err_province").html(arg.msg.province).css("color", "red");
-                        $("#err_card_id").html(arg.msg.card_id).css("color", "red");
-                        $("#err_nation").html(arg.msg.nation).css("color", "red");
-                        $("#err_email").html(arg.msg.email).css("color", "red");
-                        $("#err_telephone").html(arg.msg.telephone).css("color", "red");
-                        $("#err_qq").html(arg.msg.qq).css("color", "red");
+                        $("#err_name0").html(arg.msg.name).css("color", "red");
+                        $("#err_username0").html(arg.msg.username).css("color", "red");
+                        $("#err_gender0").html(arg.msg.gender).css("color", "red");
+                        $("#err_college0").html(arg.msg.college).css("color", "red");
+                        $("#err_place0").html(arg.msg.place).css("color", "red");
+                        $("#err_province0").html(arg.msg.province).css("color", "red");
+                        $("#err_card_id0").html(arg.msg.card_id).css("color", "red");
+                        $("#err_card_id0").html(arg.msg).css("color", "red");
+                        $("#err_nation0").html(arg.msg.nation).css("color", "red");
+                        $("#err_email0").html(arg.msg.email).css("color", "red");
+                        $("#err_telephone0").html(arg.msg.telephone).css("color", "red");
+                        $("#err_qq0").html(arg.msg.qq).css("color", "red");
                     }
                 }
             })
@@ -1084,6 +1085,7 @@
                         $("#err_grade3").html(arg.msg.grade).css("color", "red");
                         $("#err_province3").html(arg.msg.province).css("color", "red");
                         $("#err_card_id3").html(arg.msg.card_id).css("color", "red");
+                        $("#err_card_id3").html(arg.msg).css("color", "red");
                         $("#err_nation3").html(arg.msg.nation).css("color", "red");
                         $("#err_email3").html(arg.msg.email).css("color", "red");
                         $("#err_telephone3").html(arg.msg.telephone).css("color", "red");

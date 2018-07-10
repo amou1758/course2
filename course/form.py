@@ -183,10 +183,11 @@ class AddTeacher(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AddTeacher, self).__init__(*args, **kwargs)
-        print("1111")
-        tno = User.objects.filter(role_id=2).last().username
-        init_no = str(int(tno) + 1)
-        self.fields["username"].initial = init_no
+        tno = User.objects.filter(role_id=2).last()
+        if tno:
+            tno = tno.username
+            init_no = str(int(tno) + 1)
+            self.fields["username"].initial = init_no
 
 
 class AddStudent(forms.Form):
@@ -247,8 +248,10 @@ class AddStudent(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AddStudent, self).__init__(*args, **kwargs)
-        sno = User.objects.filter(role_id=3).last().username
-        init_no = str(int(sno) + 1)
-        self.fields["username"].initial = init_no
-        # 为了动态刷新choices选项
+        sno = User.objects.filter(role_id=3).last()
+        if sno:
+            sno = sno.username
+            init_no = str(int(sno) + 1)
+            self.fields["username"].initial = init_no
+            # 为了动态刷新choices选项
         self.fields["grade"].widget.choices = Grade.objects.values_list("id", "name")

@@ -37,17 +37,22 @@
                         <h2 class="panel-title">最新发布</h2>
                     </div>
                     <div class="panel-body">
-                        {% for n in news %}
-                            <div class="jumbotron" nid="{{ n.id }}">
-                                <h2>{{ n.title }}</h2>
-                                <p>{{ n.content|striptags|slice:":80" }}...<a href="#"
-                                                                              onclick="newsDetail(this)">查看详情</a></p>
-                                <br>
-                                <b>最后修改日期: {{ n.mtime }}</b>
-                                <br \>
-                                <b>发布者: {{ n.created_by }}</b>
-                            </div>
-                        {% endfor %}
+                        {% if news %}
+                            {% for n in news %}
+                                <div class="jumbotron" nid="{{ n.id }}">
+                                    <h2>{{ n.title }}</h2>
+                                    <p>{{ n.content|striptags|slice:":80" }}...<a href="#"
+                                                                                  onclick="newsDetail(this)">查看详情</a>
+                                    </p>
+                                    <br>
+                                    <b>最后修改日期: {{ n.mtime }}</b>
+                                    <br \>
+                                    <b>发布者: {{ n.created_by }}</b>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <h3>没有找到┭┮﹏┭┮</h3>
+                        {% endif %}
 
                     </div>
                     {% include 'include/paginatior.html' %}

@@ -48,7 +48,7 @@
                                 </table>
                             </div>
                         {% else %}
-                            <p style="font-size: 50px;text-align: center;font-family: 'Microsoft Sans Serif'">今日休息！！！
+                            <p style="font-size: 50px;text-align: center;font-family: 'Microsoft Sans Serif'">今天休息！！！
                                 没有课</p>
                         {% endif %}
                     </div>
@@ -58,6 +58,7 @@
                         <h2 class="panel-title">最新发布</h2>
                     </div>
                     <div class="panel-body">
+                        {% if news %}
                         {% for n in news %}
                             <div class="jumbotron" nid="{{ n.id }}">
                                 <h2>{{ n.title }}</h2>
@@ -69,6 +70,9 @@
                                 <b>发布者: {{ n.created_by }}</b>
                             </div>
                         {% endfor %}
+                        {% else %}
+                            <h3>没有找到┭┮﹏┭┮</h3>
+                        {% endif %}
 
                     </div>
                     {% include 'include/paginatior.html' %}

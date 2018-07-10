@@ -10,7 +10,7 @@ from course.form import CourseSearchForm, NewsSearchForm, PeopleSearchForm, AddT
 from course.models import Course
 from course2.ulities import MyPagination
 from news.models import News
-
+from django.core.exceptions import ValidationError
 
 @user_passes_test(check_role_edu)
 @login_required
@@ -272,7 +272,8 @@ def m_add_teacher(request):
             telephone = obj.cleaned_data.get("telephone")
             qq = obj.cleaned_data.get("qq")
             print(obj.cleaned_data)
-            user = User(
+            try:
+                user = User(
                 username=username,
                 name=name,
                 gender=gender,
@@ -286,11 +287,16 @@ def m_add_teacher(request):
                 QQ=qq,
                 birthday=card_id[6:10] + '-' + card_id[10:12] + '-' + card_id[12:14],
                 role_id=2
-            )
-            user.set_password(card_id[-6:])
-            user.save()
-            ret["msg"] = "创建成功"
-            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+                )
+                user.set_password(card_id[-6:])
+                user.save()
+                ret["msg"] = "创建成功"
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+            except ValidationError as e:
+                print(str(e))
+                ret["msg"] = str(e)
+                ret["status"] = False
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
         else:
             ret["status"] = False
             ret["msg"] = obj.errors
@@ -410,25 +416,33 @@ def m_add_student(request):
             qq = obj.cleaned_data.get("qq")
             print(obj.cleaned_data)
             grade_ = Grade.objects.get(id=grade)
-            user = User(
-                username=username,
-                name=name,
-                gender=gender,
-                college=college,
-                grade=grade_,
-                province=province,
-                card_id=card_id,
-                nation=nation,
-                email=email,
-                telephone=telephone,
-                QQ=qq,
-                birthday=card_id[6:10] + '-' + card_id[10:12] + '-' + card_id[12:14],
-                role_id=3
-            )
-            user.set_password(card_id[-6:])
-            user.save()
-            ret["msg"] = "创建成功"
-            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+            try:
+                user = User(
+                    username=username,
+                    name=name,
+                    gender=gender,
+                    college=college,
+                    grade=grade_,
+                    province=province,
+                    card_id=card_id,
+                    nation=nation,
+                    email=email,
+                    telephone=telephone,
+                    QQ=qq,
+                    birthday=card_id[6:10] + '-' + card_id[10:12] + '-' + card_id[12:14],
+                    role_id=3
+                )
+                user.set_password(card_id[-6:])
+                user.save()
+                ret["msg"] = "创建成功"
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+            except ValidationError as e:
+                print(str(e))
+                ret["msg"] = str(e)
+                ret["status"] = False
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
         else:
             ret["status"] = False
             ret["msg"] = obj.errors

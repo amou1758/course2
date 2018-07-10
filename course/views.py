@@ -19,6 +19,8 @@ def e_index(request):
     app_list = Course.objects.filter(course_status=1).order_by('course_applied_time')
     app_counts = app_list.count()
     news = News.objects.all()
+    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='select.html')
+    news = news[obj.start():obj.end()]
     return render(request, 'e_index.html', locals())
 
 

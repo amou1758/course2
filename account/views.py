@@ -27,15 +27,19 @@ def login_(request):
             # 教务
             if user:
                 login(request, user)
-                if user.role_id == 1:
-                    ret["msg"] = 1
-                # 教师
-                elif user.role_id == 2:
-                    ret["msg"] = 2
-                # 学生
-                elif user.role_id == 3:
-                    ret["msg"] = 3
-                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+                if user.is_first_login:
+                    ret["msg"] = 0
+                    return HttpResponse(json.dumps(ret, ensure_ascii=False))
+                else:
+                    if user.role_id == 1:
+                        ret["msg"] = 1
+                    # 教师
+                    elif user.role_id == 2:
+                        ret["msg"] = 2
+                    # 学生
+                    elif user.role_id == 3:
+                        ret["msg"] = 3
+                    return HttpResponse(json.dumps(ret, ensure_ascii=False))
             else:
                 ret["status"] = False
                 ret["msg"] = "用户名或密码错误，请核对后重新输入"

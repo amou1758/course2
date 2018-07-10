@@ -33,7 +33,7 @@
                 <button type="button" class="btn btn-default">新消息 <i class="fa fa-plus-square" aria-hidden="true"></i>
                 </button>
             </a>
-            <a href="#">
+            <a href="manageCenter.html">
                 <button type="button" class="btn btn-default" id="newMan">消息管理 <i class="fa fa-cog"
                                                                                   aria-hidden="true"></i></button>
             </a>
@@ -73,6 +73,10 @@
                             </td>
                         </tr>
                     {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7"><h1 style="color: silver;text-align: center">你还没有发布任何通知哦~</h1></td>
+                    </tr>
                 {% endif %}
                 </tbody>
             </table>

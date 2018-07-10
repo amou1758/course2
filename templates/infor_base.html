@@ -179,20 +179,21 @@
                             <th>头像</th>
                             <td>
                                 {% if user.avatar %}
-                                    <img width="40px" height="40px" src="media/{{ user.avatar }}"
+                                    <img width="80px" height="80px" src="media/{{ user.avatar }}"
                                          alt="/static/image/women.png">
 
                                 {% else %}
                                     {% if user.gender == 'M' %}
-                                        <img width="40px" height="40px" src="/static/image/man.png">
+                                        <img width="80px" height="80px" src="/static/image/man.png">
                                     {% else %}
-                                        <img width="40px" height="40px" src="/static/image/women.png">
+                                        <img width="80px" height="80px" src="/static/image/women.png">
                                     {% endif %}
                                 {% endif %}
                                 <form action="change_avatar" method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="file" id="chooseImage" name="avatar" accept=".jpg,.jpeg,.png">
-                                    <button type="submit" class="btn btn-default btn-sm"><i
+                                    <br>
+                                    <button type="submit" class="btn btn-default"><i
                                             class="fa fa-cloud-upload fa-lg" aria-hidden="true"></i></button>
                                 </form>
                             </td>
