@@ -697,6 +697,7 @@
                                 {{ sfm.card_id }}
                             <p>
                                 <small id="err_card_id3"></small>
+                                <small id="err_card_id31"></small>
                             </p>
                             </p>
                             <p>
@@ -735,7 +736,7 @@
                         </div>
                     </form>
                     <div class="modal-footer">
-                        <small><b id="err_msg2" style="float: left"></b></small>
+                        <small><b id="err_msg3" style="float: left"></b></small>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                         <button type="button" class="btn btn-primary" onclick="addS()">确定</button>
                     </div>
@@ -950,6 +951,7 @@
                         $("#err_telephone").html(arg.msg.telephone).css("color", "red");
                         $("#err_qq").html(arg.msg.qq).css("color", "red");
 
+
                     }
                 }
             })
@@ -1087,10 +1089,12 @@
             $("#err_grade3").html("")
             $("#err_province3").html("")
             $("#err_card_id3").html("")
+            $("#err_card_id31").html("")
             $("#err_nation3").html("")
             $("#err_email3").html("")
             $("#err_telephone3").html("")
             $("#err_qq3").html("")
+            $("#addStudent #err_msg3").html("")
             $.ajax({
                 url: "/m_add_student",
                 type: "POST",
@@ -1110,11 +1114,12 @@
                         $("#err_grade3").html(arg.msg.grade).css("color", "red");
                         $("#err_province3").html(arg.msg.province).css("color", "red");
                         $("#err_card_id3").html(arg.msg.card_id).css("color", "red");
-                        $("#err_card_id3").html(arg.msg).css("color", "red");
+                        {#$("#err_card_id31").html(arg.msg).css("color", "red");#}
                         $("#err_nation3").html(arg.msg.nation).css("color", "red");
                         $("#err_email3").html(arg.msg.email).css("color", "red");
                         $("#err_telephone3").html(arg.msg.telephone).css("color", "red");
                         $("#err_qq3").html(arg.msg.qq).css("color", "red");
+                        $("#addStudent #err_msg3").html(arg.msg).css("color", "red");
 
                     }
                 }

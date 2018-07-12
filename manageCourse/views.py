@@ -130,7 +130,7 @@ def m_course_del(request):
 @user_passes_test(check_role_edu)
 def m_news(request):
     if request.method == "GET":
-        fm = CourseSearchForm()
+        fm = NewsSearchForm()
         news = News.objects.all().order_by("-ctime")
         obj = MyPagination(news.count(), request.GET.get("p"), 10, url='m_news')
         news = news[obj.start():obj.end()]
@@ -139,6 +139,7 @@ def m_news(request):
         fm = NewsSearchForm(request.POST)
         if fm.is_valid():
             content = fm.cleaned_data.get("content")
+
             news = News.objects.filter(title__contains=content).order_by("-ctime")
             obj = MyPagination(news.count(), request.GET.get("p"), 10, url='m_news')
             news = news[obj.start():obj.end()]
@@ -441,6 +442,12 @@ def m_add_student(request):
                 ret["msg"] = str(e)
                 ret["status"] = False
                 return HttpResponse(json.dumps(ret, ensure_ascii=False))
+            except Exception as e:
+                if str(e) == "UNIQUE constraint failed: account_user.user_no":
+                    ret["status"] = False
+                    ret["msg"] = "学号已存在，请检查学号"
+                return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
 
 
         else:

@@ -129,10 +129,13 @@
                     <i class="fa fa-caret-down fa-lg" aria-hidden="true"></i></span>
                         <ul class="dropdown-menu" aria-labelledby="dLabel">
                             <li><a href="/e/index.html"><i class="fa fa-indent" aria-hidden="true"></i> 首页</a></li>
-                            <li><a href="/e_information.html">个人中心</a></li>
-                            <li><a href="/change_password.html">更改密码</a></li>
+                            <li><a href="/e_information.html"><i class="fa fa-user" aria-hidden="true"></i> 个人中心</a>
+                            </li>
+                            <li><a href="/change_password.html"><i class="fa fa-key" aria-hidden="true"></i> 更改密码</a>
+                            </li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="{% url "logout_" %}">注销</a></li>
+                            <li><a href="{% url "logout_" %}"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

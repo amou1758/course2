@@ -1,11 +1,15 @@
 import datetime
 import json
 
+import os
+import xlwt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
+from django.utils.http import urlquote
 
+from account.models import User
 from course.form import PubForm, AppForm, ExtendForm, CourseSearchForm, AddTeacher, AddStudent
 from course2.ulities import MyPagination
 from news.models import News
@@ -19,7 +23,7 @@ def e_index(request):
     app_list = Course.objects.filter(course_status=1).order_by('course_applied_time')
     app_counts = app_list.count()
     news = News.objects.all()
-    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='select.html')
+    obj = MyPagination(news.count(), request.GET.get("p"), 5, url='/e/index.html')
     news = news[obj.start():obj.end()]
     return render(request, 'e_index.html', locals())
 
@@ -28,7 +32,9 @@ def e_index(request):
 @user_passes_test(check_role_edu)
 def e_news(request):
     news_list = News.objects.all().order_by("-ctime")
-    return render(request, "e_news.html", {"news_list": news_list})
+    obj = MyPagination(news_list.count(), request.GET.get("p"), 10, url='/e/news.html')
+    news_list = news_list[obj.start():obj.end()]
+    return render(request, "e_news.html", {"news_list": news_list, "obj": obj})
 
 
 @login_required
@@ -38,7 +44,7 @@ def pub_course(request):
         courses = Course.objects.all().order_by('-course_ctime')
         pub_form = PubForm()
 
-        obj = MyPagination(courses.count(), request.GET.get('p'), 15, url='pubCourse.html')
+        obj = MyPagination(courses.count(), request.GET.get('p'), 15, url='/e/pubCourse.html')
         courses = courses[obj.start():obj.end()]
         return render(request, "e_pubCourse.html", {"pub_form": pub_form, "courses": courses, "obj": obj})
     if request.method == "POST":
@@ -73,7 +79,9 @@ def pub_course(request):
 @user_passes_test(check_role_edu)
 def e_aprrove(request):
     app_list = Course.objects.filter(course_status=1)
-    return render(request, "e_approve.html", {"app_list": app_list})
+    obj = MyPagination(app_list.count(), request.GET.get("p"), 10, url='/e/approve.html')
+    app_list = app_list[obj.start():obj.end()]
+    return render(request, "e_approve.html", {"app_list": app_list, "obj": obj})
 
 
 @login_required
@@ -120,7 +128,9 @@ def t_index(request):
     today_courses = Course.objects.filter(course_choosed_student__gte=1, course_teacher=request.user,
                                           course_week=today_)
     news = News.objects.filter(Q(watcher=1) | Q(watcher=2)).order_by("-mtime")
-    return render(request, "t_index.html", {"today_course": today_courses, "news": news})
+    obj = MyPagination(news.count(), request.GET.get('p'), 5, url='index.html')
+    news = news[obj.start():obj.end()]
+    return render(request, "t_index.html", {"today_course": today_courses, "news": news, "obj": obj})
 
 
 @login_required
@@ -135,7 +145,7 @@ def t_apply(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
         obj = AppForm(request.POST)
-        print(obj)
+
         if obj.is_valid():
             try:
                 Course.objects.filter(course_no=request.POST.get("cno")).update(
@@ -161,6 +171,7 @@ def t_apply(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
         else:
+
             ret["status"] = False
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
@@ -232,9 +243,34 @@ def t_extend(request):
 
 @login_required
 @user_passes_test(check_role_t)
-def t_student_list(request):
-    pass
+def t_student_list(request, cname):
+    print(cname)
+    student_list = StudentCourse.objects.filter(course__course_name=cname)
+    workbook = xlwt.Workbook(encoding='utf-8')
+    row0 = ['学号', '姓名', '学院', '成绩']
+    worksheet = workbook.add_sheet(cname + '选课表')
+    for j in range(len(row0)):
+        worksheet.write(0, j, row0[j])
 
+    for i in range(0, len(student_list)):
+        worksheet.write(i + 1, 0, label=student_list[i].student.username)
+        worksheet.write(i + 1, 1, label=student_list[i].student.name)
+        worksheet.write(i + 1, 2, label=student_list[i].student.get_college_display())
+        if student_list[i].score == 0:
+            worksheet.write(i + 1, 3, label="")
+        else:
+            worksheet.write(i + 1, 3, label=student_list[i].score)
+    excel_name = cname + '-选课表.xls'
+    workbook.save('static/file/' + cname + '-选课表.xls')
+    BASE_PATH = os.path.abspath('.')
+    path = os.path.join(os.path.join(BASE_PATH, 'static'), 'file')
+    file = open(path + '/' + excel_name, 'rb')
+    response = FileResponse(file)
+    response["Content-Type"] = "application/octet-stream"
+
+    # 这里filename无法直接使用中文名
+    response["Content-Disposition"] = "attachment;filename='%s'" % (urlquote(excel_name))
+    return response
 
 @login_required
 @user_passes_test(check_role_t)

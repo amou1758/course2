@@ -65,8 +65,10 @@
                         <th>08:00-09:50</th>
                         {% for i in weeks %}
                             <td>{% for c in courses %}{% if c.course_time == 1 and c.course_week == i %}
-                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
-                            </td>
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}&nbsp;
+                                <a href="{% url "student_list" c.course_name %}"><i class="fa fa-table"
+                                                                                    aria-hidden="true" title="选课名单"></i></a>
+                            {% endif %}{% endfor %}</td>
                         {% endfor %}
                     </tr>
 
@@ -74,8 +76,10 @@
                         <th>09:10-12:00</th>
                         {% for i in weeks %}
                             <td>{% for c in courses %}{% if c.course_time == 2 and c.course_week == i %}
-                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
-                            </td>
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}&nbsp;
+                                <a href="{% url "student_list" c.course_name %}"><i class="fa fa-table"
+                                                                                    aria-hidden="true" title="选课名单"></i></a>
+                            {% endif %}{% endfor %}</td>
                         {% endfor %}
                     </tr>
                     <tr>
@@ -89,8 +93,10 @@
                         {% for i in weeks %}
 
                             <td>{% for c in courses %}{% if c.course_time == 3 and c.course_week == i %}
-                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
-                            </td>
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}&nbsp;
+                                <a href="{% url "student_list" c.course_name %}"><i class="fa fa-table"
+                                                                                    aria-hidden="true" title="选课名单"></i></a>
+                            {% endif %}{% endfor %}</td>
                         {% endfor %}
                     </tr>
                     <tr>
@@ -98,8 +104,10 @@
                         {% for i in weeks %}
 
                             <td>{% for c in courses %}{% if c.course_time == 4 and c.course_week == i %}
-                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
-                            </td>
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}&nbsp;
+                                <a href="{% url "student_list" c.course_name %}"><i class="fa fa-table"
+                                                                                    aria-hidden="true" title="选课名单"></i>
+                            {% endif %}{% endfor %}</td>
                         {% endfor %}
                     </tr>
                     <tr>
@@ -113,8 +121,10 @@
                         {% for i in weeks %}
 
                             <td>{% for c in courses %}{% if c.course_time == 5 and c.course_week == i %}
-                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}{% endif %}{% endfor %}
-                            </td>
+                                {{ c.course_name }}<br>教室:{{ c.get_course_classroom_display }}&nbsp;
+                                <a href="{% url "student_list" c.course_name %}"><i class="fa fa-table"
+                                                                                    aria-hidden="true" title="选课名单"></i></a>
+                            {% endif %}{% endfor %}</td>
                         {% endfor %}
                     </tr>
                     </tbody>

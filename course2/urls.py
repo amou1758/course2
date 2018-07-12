@@ -66,7 +66,7 @@ urlpatterns = [
                   path('t/offline', views.t_offline),
                   path('t/extend', views.t_extend),
                   path('t/table.html', views.t_table),
-                  re_path('t/studentList.html&(?P<cname>.+?)', views.t_student_list, name='student_list'),
+                  re_path('t/studentList.html&(?P<cname>.+)', views.t_student_list, name='student_list'),
 
                   path('s/index.html', views.s_index),
                   path('s/select.html', views.s_course_pool),

@@ -124,22 +124,34 @@
                             <p>
                                 <span>教室</span>
                                 {{ obj.course_classroom }}
+                                <br>
+                                <small id="err_classroom" style="color: red;font-size: 20px"></small>
                             </p>
                             <p>
                                 <span>星期</span>
                                 {{ obj.course_week }}
+                                <br>
+                                <small id="err_week" style="color: red;font-size: 20px"></small>
                             </p>
                             <p>
                                 <span>时间</span>
-                                {{ obj.course_time }}</p>
+                                {{ obj.course_time }}
+                                <br>
+                                <small id="err_time" style="color: red;font-size: 20px"></small>
+                            </p>
+
                             <p>
                                 <span>课程类型</span>
-                                {{ obj.course_type }}</p>
+                                {{ obj.course_type }}
+                                <br>
+                                <small id="err_type" style="color: red;font-size: 20px"></small>
+                            </p>
+
                             <p>
                                 <span>课程名额</span>
                                 {{ obj.course_total_people }} 人
                                 <br>
-                                <small><b id="err_msgTotal" style="float: left"></b></small>
+                                <small><b id="err_total" style="float: left"></b></small>
                             </p>
 
 
@@ -147,7 +159,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <small><b id="err_msg" style="float: left"></b></small>
+                    <small><b id="err_msg" style="float: left;color: red"></b></small>
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" id="appBtn">申请</button>
@@ -183,13 +195,17 @@
                     success: function (arg) {
                         if (arg.status) {
                             console.log("okokok")
-                            alert("申请成功~~~");
                             $("#addModal").modal("hide");
+                            alert("申请成功~~~");
                             window.location.reload();
                         } else {
-
-                            $("#err_msgTotal").html(arg.msg.course_total_people);
-                            $("#err_msg").html(arg.msg);
+                            console.log(arg.msg)
+                            $("#err_total").html(arg.msg.course_total_people);
+                            $("#err_classroom").html(arg.msg.course_classroom);
+                            $("#err_week").html(arg.msg.course_week);
+                            $("#err_time").html(arg.msg.course_time);
+                            $("#err_type").html(arg.msg.course_type);
+                            $("#err_msg").html("该时段，您已经有了其他课程，请另选时间");
                         }
                     }
                 })

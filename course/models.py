@@ -121,7 +121,7 @@ class Course(models.Model):
 class StudentCourse(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    score = models.IntegerField(null=True)
+    score = models.IntegerField(default=0)
     ctime = models.DateField(auto_now_add=True)
     is_choosed = models.BooleanField(default=True)
 
