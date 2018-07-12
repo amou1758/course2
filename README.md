@@ -27,4 +27,4 @@
 + 个人资料设置
 
 ### 流程很简单，如图：
-![image](https://coding.net/u/wolflikai/p/course2/git/raw/master/dia.png)
+![image](https://github.com/wolflikai/course2/blob/master/dia.png)
