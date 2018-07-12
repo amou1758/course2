@@ -118,9 +118,17 @@
         data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
     });
 
+
     function tip() {
         $('#example').popover("show")
     }
+
+    // 捕捉enter键
+    $(document).keyup(function (e) {
+        if (e.keyCode == 13) {
+            SubEvent();
+        }
+    })
 
     function SubEvent() {
         $.ajax({

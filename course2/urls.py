@@ -86,5 +86,4 @@ urlpatterns = [
                   path("logout.html", a_views.logout_, name="logout_"),
                   path('resetPassword', a_views.reset_password),
 
-
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

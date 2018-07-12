@@ -37,8 +37,8 @@
     <div class="title-r">
         <span><button class="btn-default btn" onclick="Add()">新建条目 <i
                 class="fa fa-plus-square" aria-hidden="true"></i></button></span>
-        <span><button class="btn-primary btn" onclick="pathchAdd()">批量创建 <i class="fa fa-file-text"
-                                                                            aria-hidden="true"></i></button></span>
+        {#        <span><button class="btn-primary btn" onclick="patchAdd()">批量创建 <i class="fa fa-file-text"#}
+        {#                                                                            aria-hidden="true"></i></button></span>#}
         <span><button class="btn-danger btn" onclick="Del()">删除选中条目 <i class="fa fa-trash"
                                                                        aria-hidden="true"></i></button></span>
 
@@ -248,6 +248,12 @@
 
         })
     }
+
+    {##}
+    {#function patchAdd() {#}
+    {#    window.parent.$("#patchStudent").modal("show");#}
+    {##}
+
 
     function SelectAll() {
         v = $("#select").prop("checked");
