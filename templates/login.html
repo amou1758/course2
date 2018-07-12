@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <title>登录</title>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
@@ -19,11 +20,11 @@
         form {
             width: 400px;
             height: 200px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -250px;
-            margin-left: -200px;
+            position: relative;
+
+            margin-top: 250px;
+
+
         }
 
         h2 {
@@ -49,14 +50,10 @@
             padding: 10px;
 
         }
-
         .tip {
-            position: relative;
-            width: 140px;
-            height: 30px;
-            margin-left: 20px;
-
+            margin-top: 20px;
         }
+
 
         .hide {
             display: block;
@@ -65,8 +62,9 @@
 
 </head>
 <body>
-<div class="bk">
-
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-10 col-sm-12">
     <form method="post" id="fm">
         {% csrf_token %}
         <div class="form-group">
@@ -92,26 +90,34 @@
         > 忘记密码？</a>
 
 
+        <div class="tip">
+            <p class="bg-info">
+                测试账户:
+                <br>
+                <small class="text-muted">教务：88880001</small>
+                <br>
+                <small class="text-muted">教师1：99990001</small>
+                <br>
+                <small class="text-muted">教师2：99990002</small>
+                <br>
+                <small class="text-muted">学生1：20121011001</small>
+                <br>
+                <small class="text-muted">学生2：20121011002</small>
+                <br>
+                <small class="text-muted">所有密码均为：test1234</small>
+            </p>
+        </div>
     </form>
-    <div class="tip">
-        <p class="bg-info">
-            测试账户:
             <br>
-            <small class="text-muted">教务：88880001</small>
-            <br>
-            <small class="text-muted">教师1：99990001</small>
-            <br>
-            <small class="text-muted">教师2：99990002</small>
-            <br>
-            <small class="text-muted">学生1：20121011001</small>
-            <br>
-            <small class="text-muted">学生2：20121011002</small>
-            <br>
-            <small class="text-muted">所有密码均为：test1234</small>
-        </p>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-md-8">
+
+        </div>
     </div>
 </div>
-
 
 <script>
     $.ajaxSetup({
