@@ -21,7 +21,8 @@
             width: 400px;
             height: 200px;
             position: relative;
-
+            left: 50%;
+            margin-left: -200px;
             margin-top: 250px;
 
 
@@ -64,7 +65,7 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-10 col-sm-12">
+        <div class="col-xs-12 col-sm-12">
     <form method="post" id="fm">
         {% csrf_token %}
         <div class="form-group">

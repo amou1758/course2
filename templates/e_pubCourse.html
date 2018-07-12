@@ -80,9 +80,11 @@
                             {% elif cour.course_status == 1 %}
                                 <td style="color: forestgreen">已被申请</td>
                             {% elif cour.course_status == 2 %}
-                                <td style="color: greenyellow">申请通过并已上线</td>
+                                <td style="color: greenyellow">申请通过</td>
                             {% elif cour.course_status == 3 %}
                                 <td style="color: red">申请未通过</td>
+                            {% elif cour.course_status == 4 %}
+                                <td style="color: darkslategrey">课程已上线</td>
                             {% else %}
                                 <td style="color: coral">课程已下线</td>
 
